@@ -13,7 +13,7 @@ The basic units of _Execution Utilities_ are commands. To create a command that 
 Below you see and example command. 
 
 
-```
+```java
 public class TestCommand extends Command {
     private String text; 
     
@@ -62,7 +62,7 @@ Hello Foo, this is your first command!
 
 All the commands should reside in the same package and the main for a command-enabled library (the library you are defining) should be like the following.
 
-```
+```java
     public static void main(String[] args) {
         if (System.getProperty("COMMANDS") == null) {
             System.setProperty("COMMANDS", "eu.unitn.disi.db.exemplar.commands");
@@ -106,7 +106,7 @@ Big objects, such as big graphs or indexes can be loaded once into memory and re
 
 To load an object you should define a loader, which is a class of type ```LoaderCommand```. The below example represents a loader for BigMultigraphs (Grava library in github).
 
-```
+```java
 public class BigMultigraphLoader extends LoaderCommand {
     private String graphPath; 
     
@@ -140,7 +140,7 @@ public class BigMultigraphLoader extends LoaderCommand {
 
 The loaded object can be stored in the console, while running and used in commands with the annotation ```@DynamicInput``` 
 
-```
+```java
     @DynamicInput(
             consoleFormat = "--graph",
             description = "multigraph used as a knowledge-base")
