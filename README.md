@@ -6,6 +6,13 @@ A small library to build commands in java using annotations on classes.
 This library allows a rapid development of commands in java, without bothering of reading arguments from main methods. 
 The library contains also a console that can be used to dinamically load big objects and use them as though they are loaded into a web service. 
 
+## Changes from version 1.0
+1. Console commands are now extensible (with annotation @ConsoleCommand)
+2. Batch experiements can be executed
+3. History on command console
+4. Added positional parameters
+5. Better error managemente
+
 ## Usage
 
 The basic units of _Execution Utilities_ are commands. To create a command that can be parsed through command line or using the command console (see below) just create a class that __extends Command__. Command defines two methods, namely execute and commandDescription. The first contains the command corpus itself, the second just a description to be visualized. 
@@ -80,24 +87,22 @@ Practically, once you build _Execution Utilities_ you can choose to run directly
 
 If everything goes right the command console should show a welcome message and a ">" to run commands. 
 
-Type ```help``` to visualize the possible directives accepted from the console. 
+Type ```\?``` to visualize the possible directives accepted from the console. 
 
 ```
 help [command]
 	show the help for a specific command or this help if no command provided
-pkg PACKAGE
-	set the package for the commands
 jar JARFILE -lib LIBDIR
 	load the jar file with the commands and the optiona libraries from LIBDIR 	directory
 obj $VARIABLE LOADER [params]
 	load or unload (if option -d $VARIABLE is present) an object into $variable using the specific loader
 exec COMMAND [params]
 	execute COMMAND with the specific parameters
-pwd
-	print the current directory
+batch BATCHFILE [-s] 
+	execute a batch file with commands, put -s to stop
+hist [-n ENTRIES] [-r]
 ```
 
-* ```pkg```  allows the specification of the package where the console has to find the commands. 
 * ```jar```defines the jar with the commands to be loaded, you can also optionally specify a lib directory.
 * ```obj``` is specifically designed to load big objects into main memory and store into a variable (see below). The variable name can subsequantely be used in a command to pass objects to the command itself. 
 
