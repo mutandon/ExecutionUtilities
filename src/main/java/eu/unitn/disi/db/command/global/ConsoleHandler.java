@@ -125,8 +125,12 @@ public class ConsoleHandler {
                                 }
                                 break;
                             case "obj": 
-                            case "\\o": 
-                                global.runCommand(new String[]{mainCommand, join(splittedLine,COMMAND_SEPARATOR)}, true);
+                            case "\\o":
+                                if (splittedLine.length > 2) {
+                                    global.runCommand(new String[]{mainCommand, splittedLine[1], join(Arrays.copyOfRange(splittedLine, 2, splittedLine.length),COMMAND_SEPARATOR)}, true);
+                                } else {
+                                    global.out().println("Insufficient parameters, usage: obj VARIABLE COMMAND");
+                                }
                                 break;                                
                             case "\\?": //global help
                                 global.printHelp("", "Available console commands\n", true);
