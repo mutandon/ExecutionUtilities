@@ -28,6 +28,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 import org.xeustechnologies.jcl.JarClassLoader;
@@ -134,20 +135,27 @@ public class Jar extends Command {
         public Map<String, Class<? extends Command>> loadCommands() {
             Map<String, Class<? extends Command>> commands = new HashMap<>(); 
             byte[] classBytes;
-            String className; 
-            Class c,sc; 
-            for (String classPath : jarFiles.keySet()) {
+            String className, classPath; 
+            Class c,sc;
+            LinkedList<String> waiting = new LinkedList<>(jarFiles.keySet());
+            while(waiting.isEmpty()) {
+                classPath = waiting.poll();
                 className = checkClass(classPath);
+                //System.out.println(className);
                 if (!"".equals(className)) {
-                    classBytes = jarFiles.get(classPath);
-                    c = defineClass( className, classBytes, 0, classBytes.length ); 
-                    sc = c; 
-                    //Navigate up the class hierarchy till we find Command; 
-                    while ((sc = sc.getSuperclass()) != null) {
-                        if (sc == Command.class) {
-                            commands.put(className, c);
-                            break;
+                    try {
+                        classBytes = jarFiles.get(classPath);
+                        c = defineClass( className, classBytes, 0, classBytes.length ); 
+                        sc = c; 
+                        //Navigate up the class hierarchy till we find Command; 
+                        while ((sc = sc.getSuperclass()) != null) {
+                            if (sc == Command.class) {
+                                commands.put(className, c);
+                                break;
+                            }
                         }
+                    } catch (NoClassDefFoundError ex) {
+                        waiting.add(classPath);
                     }
                 }
             }

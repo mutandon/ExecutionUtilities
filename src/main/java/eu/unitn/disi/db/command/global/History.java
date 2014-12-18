@@ -131,8 +131,6 @@ public class History extends Command {
             }
             return super.equals(obj);
         }
-        
-        
     }
 
 }
