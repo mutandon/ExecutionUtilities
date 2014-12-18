@@ -3,8 +3,8 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>eu.unitn.disi.db</groupId>
-  <artifactId>ExUtils</artifactId>
-  <version>0.1</version>
+  <artifactId>ExecUtils</artifactId>
+  <version>0.2</version>
   <packaging>jar</packaging>
 
   <name>ExecUtils</name>
@@ -61,7 +61,7 @@
     </dependency>
     <dependency>
  	<groupId>org.xeustechnologies</groupId>
-	<artifactId>jcl-core</artifactId> 
+	<artifactId>jcl-core</artifactId>
 	<version>2.3</version>
     </dependency>
     <dependency>

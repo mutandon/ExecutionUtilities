@@ -17,21 +17,15 @@
  */
 package eu.unitn.disi.db.command.global;
 
-import eu.unitn.disi.db.command.exceptions.ArgumentDeclarationException;
-
 /**
  * A loader command is a special Command that is able to store one object into
- * memory. Is is particularly useful if used in conjunction with console. 
+ * memory. Is is particularly useful if used in conjunction with console.
  * @author Davide Mottin <mottin@disi.unitn.eu>
  */
 public abstract class LoaderCommand extends Command {
 
     protected Object loadedObject;
 
-    public LoaderCommand() throws ArgumentDeclarationException {
-        super(); 
-    }
-    
     public Object getObject() {
         return loadedObject;
     }
