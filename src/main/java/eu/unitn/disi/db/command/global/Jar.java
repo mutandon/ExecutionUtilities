@@ -138,7 +138,7 @@ public class Jar extends Command {
             String className, classPath; 
             Class c,sc;
             LinkedList<String> waiting = new LinkedList<>(jarFiles.keySet());
-            while(waiting.isEmpty()) {
+            while(!waiting.isEmpty()) {
                 classPath = waiting.poll();
                 className = checkClass(classPath);
                 //System.out.println(className);
