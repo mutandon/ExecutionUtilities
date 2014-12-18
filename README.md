@@ -12,6 +12,7 @@ The library contains also a console that can be used to dinamically load big obj
 3. History on command console
 4. Added positional parameters
 5. Better error managemente
+6. Array parameters are now allowed (with inputs comma separated, no space allowed)
 
 ## Usage
 
@@ -23,11 +24,11 @@ Below you see and example command.
 ```java
 public class TestCommand extends Command {
     private String text; 
-    
+    private String file; 
     
     @Override
     protected void execute() throws ExecutionException {
-        System.out.printf("Hello %s, this is your first command!\n", text);
+        System.out.printf("Hello %s, this is your first command on file %s!\n", text, file);
     }
     
     @Override
@@ -45,10 +46,22 @@ public class TestCommand extends Command {
     public void setText(String text) {
         this.text = text;
     }
+    
+    @PositionalInput (
+    	name="file", 
+    	description="some input file", 
+    	position=1
+    )
+    public void setFile(String file) {
+    	this.file = file;
+    }
 }
 ```
 
-The use of the annotation above __set__ methods allows the parser to recognize parameters. The consoleFormat attribute allows the specification of the parameter name itself, while ther rest of the parameters define the numerability, the default value and the description (visible in the help).
+The use of the annotation above __set__ methods allows the parser to recognize parameters. The consoleFormat attribute allows the specification of the parameter name itself, while ther rest of the parameters define the numerability, the default value and the description (visible in the help). Three annotations are allowed: 
+* __@CommandInput__: defines a normal optional or mandatory named parameter (parameter with a name like "-t")
+* __@PositionalInput__: defines a positional input which goes in the beginning of the command, it is mandatory by default and the position must be specified starting by 1. 
+* __@DynamicInput__: used by the console to load objects into memory (See below). 
 
 A command may be invoked using. 
 
