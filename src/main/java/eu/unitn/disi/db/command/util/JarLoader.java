@@ -19,10 +19,11 @@ package eu.unitn.disi.db.command.util;
 
 import java.io.File;
 import java.io.IOException;
+import static java.lang.ClassLoader.getSystemClassLoader;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
-import org.apache.log4j.Logger;
+import static org.apache.log4j.Logger.getLogger;
 
 /**
  * Jar loader used to load commands within jars dynamically
@@ -49,7 +50,7 @@ public class JarLoader {
     
     public static void addURL(URL u) throws IOException
     {
-        URLClassLoader sysloader = (URLClassLoader) ClassLoader.getSystemClassLoader();
+        URLClassLoader sysloader = (URLClassLoader) getSystemClassLoader();
         Class sysclass = URLClassLoader.class;
 
         try {
@@ -57,7 +58,7 @@ public class JarLoader {
             method.setAccessible(true);
             method.invoke(sysloader, new Object[] {u});
         } catch (Throwable t) {
-            Logger.getLogger(JarLoader.class.getClass()).fatal("Cannot load the jar", t);
+            getLogger(JarLoader.class.getClass()).fatal("Cannot load the jar", t);
             throw new IOException("Error, could not add URL to system classloader");
         }
     }    

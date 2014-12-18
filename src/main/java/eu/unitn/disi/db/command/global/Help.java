@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 Davide Mottin <mottin@disi.unitn.eu>
+ * Copyright (C) 2014 Davide Mottin <mottin@disi.unitn.eu>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -15,39 +15,37 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package eu.unitn.disi.db.command.commands;
 
-import eu.unitn.disi.db.command.Command;
+package eu.unitn.disi.db.command.global;
+
 import eu.unitn.disi.db.command.CommandInput;
-import eu.unitn.disi.db.command.ParametersNumber;
 import eu.unitn.disi.db.command.exceptions.ExecutionException;
 
 /**
- * A test command to 
+ * Print help for commands
  * @author Davide Mottin <mottin@disi.unitn.eu>
  */
-public class TestCommand extends Command {
-    private String text; 
-    
+@ConsoleCommand(name = "help")
+public class Help extends Command {
+    private String command; 
     
     @Override
     protected void execute() throws ExecutionException {
-        System.out.printf("Hello %s, this is your first command!\n", text);
+        ExecutionService global = ExecutionService.getInstance();
+        global.printHelp(command);
     }
-    
+
     @Override
     protected String commandDescription() {
-        return "A test command ;-)";
+        return "Print a help text for user defined commands";
     }
-    
+
     @CommandInput(
-        consoleFormat="-t",
-        defaultValue="",
-        mandatory=true,
-        description="Text to be printed",
-        parameters= ParametersNumber.TWO
+        consoleFormat = "-c",
+        defaultValue = "", 
+        mandatory = false
     )
-    public void setText(String text) {
-        this.text = text;
+    public void setCommand(String command) {
+        this.command = command;
     }
 }

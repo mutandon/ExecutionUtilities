@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 Davide Mottin <mottin@disi.unitn.eu>
+ * Copyright (C) 2014 Davide Mottin <mottin@disi.unitn.eu>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -23,19 +23,29 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * A command input Annotation to represent the parameters of a command. 
- * It describes the name of the parameter in the console, the description, 
- * the parameters, default value (if present) and specifies whether a 
- * parameter is manadatory or not. 
+ * Represents a positional input for parameters
  * @author Davide Mottin <mottin@disi.unitn.eu>
  */
-
-//TODO: Check at source time if the annotated parameter is valid
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface CommandInput {
-    public String description() default ""; 
-    public String consoleFormat();
-    public String defaultValue();
-    public boolean mandatory();
+public @interface PositionalInput {
+    /** 
+     * The description of the parameter used for the help
+     * @return The description of the command. 
+     */
+    public String description() default "";
+    /**
+     * Specify the position of the parameter. Positional parameters must be ordered
+     * and consecutive. Repeated numbers or not consecutive will throw an exception. 
+     * The numbering should start by 1 
+     * @return The position of the parameter in the command. 
+     */
+    public int position();
+    /**
+     * Specify the name of the parameter to be visualized in the help. 
+     * For positional arguments we do not bind this name to a paramater format, 
+     * that is instead specified by the position. 
+     * @return The console name of the parameter
+     */
+    public String name();
 }

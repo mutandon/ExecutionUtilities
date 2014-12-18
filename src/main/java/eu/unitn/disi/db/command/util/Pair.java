@@ -1,5 +1,7 @@
 package eu.unitn.disi.db.command.util;
 
+import static java.lang.String.format;
+
 /*
  * IQR (Interactive Query Relaxation) Library
  * Copyright (C) 2011  Davide Mottin (mottin@disi.unitn.eu
@@ -27,8 +29,8 @@ package eu.unitn.disi.db.command.util;
  * @author Davide Mottin
  */
 public class Pair<A,B> {
-    private A first;
-    private B second;
+    protected A first;
+    protected B second;
 
     public Pair() {}
 
@@ -55,10 +57,8 @@ public class Pair<A,B> {
 
     @Override
     public String toString() {
-        return String.format("(%s,%s)", first, second);
+        return format("(%s,%s)", first, second);
     }
-
-
 
     @Override
     public boolean equals(Object obj) {
@@ -78,6 +78,6 @@ public class Pair<A,B> {
 
     @Override
     protected Object clone() throws CloneNotSupportedException {
-        return new Pair<A,B>(first, second);
+        return new Pair<>(first, second);
     }
 }

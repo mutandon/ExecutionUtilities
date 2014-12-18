@@ -16,13 +16,27 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package eu.unitn.disi.db.command;
+package eu.unitn.disi.db.command.exceptions;
 
 /**
- * The interface marks an algorithm or a command as interruptible, therefore
- * it can be safely stopped from the execution. 
+ * The arguments are declared in a bad way, the source code is incorrect. 
+ * Although it should be at compile time, that check is hard to perform, so we
+ * raise an exception on the formal correctness before the actual execution of 
+ * a command. 
+ * 
  * @author Davide Mottin <mottin@disi.unitn.eu>
  */
-public interface Interruptible {
-    void interrupt();
+public class ArgumentDeclarationException extends GenericException {
+
+    public ArgumentDeclarationException(String message, Object... parameters) {
+        super(message, parameters);
+    }
+
+    public ArgumentDeclarationException(String formatString, Throwable cause, Object... parameters) {
+        super(formatString, cause, parameters);
+    }
+
+    public ArgumentDeclarationException(Throwable cause) {
+        super(cause);
+    }
 }

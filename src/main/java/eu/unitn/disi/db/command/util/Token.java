@@ -42,16 +42,19 @@ public class Token implements CharSequence
         return null == value ? type.toString() : value.toString();
     }
     
+    @Override
     public char charAt(int index)
     {
         return  value.charAt(index);
     }
 
+    @Override
     public int length()
     {
         return (null == value ? 0 : value.length());
     }
 
+    @Override
     public CharSequence subSequence(int start, int end)
     {
         return value.subSequence(start, end);

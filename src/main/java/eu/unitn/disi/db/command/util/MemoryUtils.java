@@ -17,12 +17,14 @@
  */
 package eu.unitn.disi.db.command.util;
 
+import static java.lang.Runtime.getRuntime;
+
 /**
  * Returns the amount of free memory in order to prevent OutOfMemoryErrors
  * @author Davide Mottin <mottin@disi.unitn.eu>
  */
 public class MemoryUtils {
-    private static final Runtime runtime = Runtime.getRuntime();
+    private static final Runtime runtime = getRuntime();
     
     private MemoryUtils() {}
     
@@ -40,5 +42,5 @@ public class MemoryUtils {
     
     public static long getMaxMemory() {
         return runtime.maxMemory();
-    }    
+    }
 }

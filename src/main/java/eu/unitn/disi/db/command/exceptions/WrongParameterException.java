@@ -17,10 +17,8 @@
  */
 package eu.unitn.disi.db.command.exceptions;
 
-import eu.unitn.disi.db.command.exceptions.GenericException;
-
 /**
- *
+ * Exception raies if there is wrong instance of the parameters in the command
  * @author Davide Mottin <mottin@disi.unitn.eu>
  */
 public class WrongParameterException extends GenericException {

@@ -17,8 +17,15 @@
  */
 package eu.unitn.disi.db.command.util;
 
+import static java.lang.String.format;
 import org.apache.log4j.Level;
+import static org.apache.log4j.Level.DEBUG;
+import static org.apache.log4j.Level.ERROR;
+import static org.apache.log4j.Level.FATAL;
+import static org.apache.log4j.Level.INFO;
+import static org.apache.log4j.Level.WARN;
 import org.apache.log4j.Logger;
+import static org.apache.log4j.Logger.getLogger;
 
 
 /**
@@ -29,49 +36,49 @@ import org.apache.log4j.Logger;
  */
 public class LoggableObject {
    
-    protected Logger logger = Logger.getLogger(this.getClass().getCanonicalName());
+    protected Logger logger = getLogger(this.getClass().getCanonicalName());
     
     /*
      * Logging methods (wrappers of log4 with format string facilities)
      */
     protected void debug(String message, Object... args) {
-        log(Level.DEBUG, null, message, args);
+        log(DEBUG, null, message, args);
     }
     
     protected void warn(String message, Object... args) {
-        log(Level.WARN, null, message, args);
+        log(WARN, null, message, args);
     }
 
     protected void fatal(String message, Object... args) {
-        log(Level.FATAL, null, message, args);
+        log(FATAL, null, message, args);
     }
     
     protected void error(String message, Object... args) {
-        log(Level.ERROR, null, message, args);
+        log(ERROR, null, message, args);
     }
 
     protected void info(String message, Object... args) {
-        log(Level.INFO, null, message, args);
+        log(INFO, null, message, args);
     }
 
     protected void debug(String message, Throwable ex, Object... args) {
-        log(Level.DEBUG, ex, message, args);
+        log(DEBUG, ex, message, args);
     }
     
     protected void warn(String message, Throwable ex, Object... args) {
-        log(Level.WARN, ex, message, args);
+        log(WARN, ex, message, args);
     }
 
     protected void fatal(String message, Throwable ex, Object... args) {
-        log(Level.FATAL, ex, message, args);
+        log(FATAL, ex, message, args);
     }
     
     protected void error(String message, Throwable ex, Object... args) {
-        log(Level.ERROR, ex, message, args);
+        log(ERROR, ex, message, args);
     }
 
     protected void info(String message, Throwable ex, Object... args) {
-        log(Level.INFO, ex, message, args);
+        log(INFO, ex, message, args);
     }
     
     protected void log(Level level, String message, Object... args) {
@@ -79,6 +86,6 @@ public class LoggableObject {
     }
 
     protected void log(Level level, Throwable ex, String message, Object... args) {
-        logger.log(level, String.format(message, args), ex);
+        logger.log(level, format(message, args), ex);
     }
 }

@@ -17,6 +17,14 @@
  */
 package eu.unitn.disi.db.command.util;
 
+import static eu.unitn.disi.db.command.util.StopWatch.TimeType.APPLICATION;
+import static eu.unitn.disi.db.command.util.StopWatch.TimeType.CPU;
+import static eu.unitn.disi.db.command.util.Time.getCpuTime;
+import static eu.unitn.disi.db.command.util.Time.getCpuTime;
+import static eu.unitn.disi.db.command.util.Time.getSystemTime;
+import static eu.unitn.disi.db.command.util.Time.getUserTime;
+import static java.lang.System.nanoTime;
+
 /**
  * This class implements a stop watch to measure the actual CPU time*.
  *
@@ -60,7 +68,7 @@ public class StopWatch {
      * Creates a stopwatch with TimeType.APPLICATION
      */
     public StopWatch() {
-        this(TimeType.APPLICATION);
+        this(APPLICATION);
     }
 
     /**
@@ -76,7 +84,7 @@ public class StopWatch {
      * @param tt
      */
     public StopWatch(long ids[]) {
-        this(TimeType.CPU);
+        this(CPU);
         this.ids = ids;
     }
 
@@ -87,13 +95,13 @@ public class StopWatch {
     private long getTime() {
         switch(type) {
             case CPU:
-                return ids == null ? Time.getCpuTime() : Time.getCpuTime(this.ids);
+                return ids == null ? getCpuTime() : getCpuTime(this.ids);
             case USER:
-                return Time.getUserTime();
+                return getUserTime();
             case SYSTEM:
-                return Time.getSystemTime();
+                return getSystemTime();
             case APPLICATION:
-                return System.nanoTime();
+                return nanoTime();
         }
         return 0L;
     }

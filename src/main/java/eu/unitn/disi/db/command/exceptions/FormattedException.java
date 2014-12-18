@@ -17,6 +17,7 @@
  */
 package eu.unitn.disi.db.command.exceptions;
 
+import static java.lang.String.format;
 import java.util.Formatter;
 
 /**
@@ -32,10 +33,10 @@ public abstract class FormattedException extends Exception {
     }
 
     public FormattedException(String formatString, Throwable cause, Object... parameters) {
-        super(String.format(formatString, parameters), cause);
+        super(format(formatString, parameters), cause);
     }
 
     public FormattedException(String message, Object... parameters) {
-        super(String.format(message, parameters));
+        super(format(message, parameters));
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 Davide Mottin <mottin@disi.unitn.eu>
+ * Copyright (C) 2014 Davide Mottin <mottin@disi.unitn.eu>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -15,16 +15,20 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package eu.unitn.disi.db.command;
+package eu.unitn.disi.db.command.global;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- *
+ * This annotation allows the creation of console commands, which are exclusively 
+ * run into console. 
  * @author Davide Mottin <mottin@disi.unitn.eu>
  */
-public abstract class LoaderCommand extends Command {
-    protected Object loadedObject;
-    
-    public Object getObject() {
-        return loadedObject;
-    }
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+@interface ConsoleCommand { 
+    public String name();
 }

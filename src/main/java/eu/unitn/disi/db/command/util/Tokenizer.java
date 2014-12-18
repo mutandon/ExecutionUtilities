@@ -18,51 +18,58 @@
  */
 package eu.unitn.disi.db.command.util;
 
+import static eu.unitn.disi.db.command.util.Tokenizer.Type.ARRAY;
+import static eu.unitn.disi.db.command.util.Tokenizer.Type.ASSIGN;
+import static eu.unitn.disi.db.command.util.Tokenizer.Type.CLOSURE;
+import static eu.unitn.disi.db.command.util.Tokenizer.Type.EXECUTION;
+import static eu.unitn.disi.db.command.util.Tokenizer.Type.NEWLINE;
+import static eu.unitn.disi.db.command.util.Tokenizer.Type.PIPE;
+import static eu.unitn.disi.db.command.util.Tokenizer.Type.SEMICOLON;
+import static eu.unitn.disi.db.command.util.Tokenizer.Type.WORD;
+import static java.lang.Character.isJavaIdentifierPart;
+import static java.lang.Integer.parseInt;
+import static java.lang.String.valueOf;
+import static java.lang.System.err;
 
 /**
  * Bash-like tokenizer.
- * 
+ *
  * Single and double quotes are just like Bash - single quotes escape everything
- * (including backslashes), newlines are allowed in quotes.
- * backslash-newline indicates a line continuation and is removed.
- * 
- * Variable expansion is just like Bash: $NAME or ${NAME[[:][-+=?WORD]},
- * except it can yield any Object. Variables expanded within double-quotes,
- * or adjacent to a String are converted to String.
- * 
+ * (including backslashes), newlines are allowed in quotes. backslash-newline
+ * indicates a line continuation and is removed.
+ *
+ * Variable expansion is just like Bash: $NAME or ${NAME[[:][-+=?WORD]}, except
+ * it can yield any Object. Variables expanded within double-quotes, or adjacent
+ * to a String are converted to String.
+ *
  * Unlike bash, indirect variable expansion is supported using ${$NAME}.
- * 
- * Only a single variable assignment is recognized, with '=' being the second token.
- * (Bash allows name1=value1 name2=value2 ... command args)
- * 
- * Comments can only start where white space is allowed:
- * # or // starts a line comment, /* starts a block comment.
- * The following common uses do NOT start comments:
- *    ls http://example.com#anchor
- *    ls $dir/*.java
- * 
+ *
+ * Only a single variable assignment is recognized, with '=' being the second
+ * token. (Bash allows name1=value1 name2=value2 ... command args)
+ *
+ * Comments can only start where white space is allowed: # or // starts a line
+ * comment, /* starts a block comment. The following common uses do NOT start
+ * comments: ls http://example.com#anchor ls $dir/*.java
+ *
  * @see http://wiki.bash-hackers.org/syntax/basicgrammar
  */
-public class Tokenizer
-{
-    public enum Type
-    {
+public class Tokenizer {
+
+    public enum Type {
+
         ASSIGN('='), PIPE('|'), SEMICOLON(';'), NEWLINE, ARRAY, CLOSURE, EXECUTION, WORD, EOT;
 
         private char c;
 
-        Type()
-        {
+        Type() {
         }
 
-        Type(char c)
-        {
+        Type(char c) {
             this.c = c;
         }
 
         @Override
-        public String toString()
-        {
+        public String toString() {
             return (c == 0 ? super.toString() : "'" + c + "'");
         }
     }
@@ -75,7 +82,7 @@ public class Tokenizer
     private final boolean inArray;
     private final boolean inQuote;
 
-    private Type type = Type.NEWLINE;
+    private Type type = NEWLINE;
     private CharSequence value;
     private Token token;
 
@@ -85,13 +92,11 @@ public class Tokenizer
     private int index;
     private boolean firstWord;
 
-    public Tokenizer(CharSequence text)
-    {
+    public Tokenizer(CharSequence text) {
         this(text, null, false);
     }
 
-    public Tokenizer(CharSequence text, Evaluate evaluate, boolean inQuote)
-    {
+    public Tokenizer(CharSequence text, Evaluate evaluate, boolean inQuote) {
         this.text = text;
         this.evaluate = evaluate;
         this.inQuote = inQuote;
@@ -100,43 +105,38 @@ public class Tokenizer
 
         boolean array = false;
 
-        if (text instanceof Token)
-        {
+        if (text instanceof Token) {
             Token t = (Token) text;
             line = t.line;
             column = t.column;
-            array = (Type.ARRAY == t.type);
+            array = (ARRAY == t.type);
         }
 
         inArray = array;
         getch();
 
-        if (DEBUG)
-        {
-            if (inArray)
-                System.err.println("Tokenizer[" + text + "]");
-            else
-                System.err.println("Tokenizer<" + text + ">");
+        if (DEBUG) {
+            if (inArray) {
+                err.println("Tokenizer[" + text + "]");
+            } else {
+                err.println("Tokenizer<" + text + ">");
+            }
         }
     }
 
-    public Type type()
-    {
+    public Type type() {
         return type;
     }
 
-    public CharSequence value()
-    {
+    public CharSequence value() {
         return value;
     }
 
-    public Token token()
-    {
+    public Token token() {
         return token;
     }
 
-    public Type next()
-    {
+    public Type next() {
         final Type prevType = type;
         token = null;
         value = null;
@@ -144,32 +144,30 @@ public class Tokenizer
         short tLine;
         short tColumn;
 
-        while (true)
-        {
+        while (true) {
             skipSpace();
             tLine = line;
             tColumn = column;
 
-            switch (ch)
-            {
+            switch (ch) {
                 case EOT:
                     type = Type.EOT;
                     break;
 
                 case '\n':
                     getch();
-                    if (inArray)
+                    if (inArray) {
                         continue;
+                    }
                     // only return NEWLINE once and not if not preceded by ; or |
-                    switch (prevType)
-                    {
+                    switch (prevType) {
                         case PIPE:
                         case SEMICOLON:
                         case NEWLINE:
                             continue;
 
                         default:
-                            type = Type.NEWLINE;
+                            type = NEWLINE;
                             break;
                     }
                     break;
@@ -183,36 +181,33 @@ public class Tokenizer
 
                 case ';':
                     getch();
-                    type = Type.SEMICOLON;
+                    type = SEMICOLON;
                     break;
 
                 case '|':
                     getch();
-                    type = Type.PIPE;
+                    type = PIPE;
                     break;
 
                 case '=':
-                    if (firstWord || inArray)
-                    {
+                    if (firstWord || inArray) {
                         getch();
-                        type = Type.ASSIGN;
+                        type = ASSIGN;
                         break;
                     }
-                    // fall through
+                // fall through
                 default:
                     value = word();
-                    type = Type.WORD;
+                    type = WORD;
             }
 
-            firstWord = (Type.WORD == type && (Type.WORD != prevType && Type.ASSIGN != prevType));
+            firstWord = (WORD == type && (WORD != prevType && ASSIGN != prevType));
             token = new Token(type, value, tLine, tColumn);
 
-            if (DEBUG)
-            {
-                System.err.print("<" + type + ">");
-                if (Type.EOT == type)
-                {
-                    System.err.println();
+            if (DEBUG) {
+                err.print("<" + type + ">");
+                if (Type.EOT == type) {
+                    err.println();
                 }
             }
 
@@ -220,24 +215,23 @@ public class Tokenizer
         }
     }
 
-    private CharSequence word()
-    {
+    private CharSequence word() {
         int start = index - 1;
         int skipCR = 0;
 
-        do
-        {
-            switch (ch)
-            {
+        do {
+            switch (ch) {
                 case '\n':
-                    if (index >= 2 && text.charAt(index - 2) == '\r')
+                    if (index >= 2 && text.charAt(index - 2) == '\r') {
                         skipCR = 1;
-                    // fall through
+                    }
+                // fall through
                 case '=':
-                    if ((Type.WORD == type || Type.ASSIGN == type) && '=' == ch
-                        && !inArray)
+                    if ((WORD == type || ASSIGN == type) && '=' == ch
+                            && !inArray) {
                         continue;
-                    // fall through
+                    }
+                // fall through
                 case ' ':
                 case '\t':
                 case '|':
@@ -257,29 +251,26 @@ public class Tokenizer
                     skipQuote();
                     break;
             }
-        }
-        while (getch() != EOT);
+        } while (getch() != EOT);
 
         return text.subSequence(start, index - 1);
     }
 
-    private CharSequence group()
-    {
+    private CharSequence group() {
         final char push = ch;
         final char pop;
 
-        switch (ch)
-        {
+        switch (ch) {
             case '{':
-                type = Type.CLOSURE;
+                type = CLOSURE;
                 pop = '}';
                 break;
             case '(':
-                type = Type.EXECUTION;
+                type = EXECUTION;
                 pop = ')';
                 break;
             case '[':
-                type = Type.ARRAY;
+                type = ARRAY;
                 pop = ']';
                 break;
             default:
@@ -292,12 +283,10 @@ public class Tokenizer
         int start = index;
         int depth = 1;
 
-        while (true)
-        {
+        while (true) {
             boolean comment = false;
 
-            switch (ch)
-            {
+            switch (ch) {
                 case '{':
                 case '(':
                 case '[':
@@ -306,18 +295,17 @@ public class Tokenizer
                     break;
             }
 
-            if (getch() == EOT)
-            {
+            if (getch() == EOT) {
                 throw new EOFError(sLine, sCol, "unexpected EOT looking for matching '"
-                    + pop + "'");
+                        + pop + "'");
             }
 
             // don't recognize comments that start within a word
-            if (comment || isBlank(ch))
+            if (comment || isBlank(ch)) {
                 skipSpace();
+            }
 
-            switch (ch)
-            {
+            switch (ch) {
                 case '"':
                 case '\'':
                     skipQuote();
@@ -328,40 +316,35 @@ public class Tokenizer
                     break;
 
                 default:
-                    if (push == ch)
+                    if (push == ch) {
                         depth++;
-                    else if (pop == ch && --depth == 0)
+                    } else if (pop == ch && --depth == 0) {
                         return text.subSequence(start, index - 1);
+                    }
             }
         }
 
     }
 
-    private char escape()
-    {
+    private char escape() {
         assert '\\' == ch;
 
-        switch (getch())
-        {
+        switch (getch()) {
             case 'u':
                 getch();
                 getch();
                 getch();
                 getch();
 
-                if (EOT == ch)
-                {
+                if (EOT == ch) {
                     throw new EOFError(line, column, "unexpected EOT in \\u escape");
                 }
 
                 String u = text.subSequence(index - 4, index).toString();
 
-                try
-                {
-                    return (char) Integer.parseInt(u, 16);
-                }
-                catch (NumberFormatException e)
-                {
+                try {
+                    return (char) parseInt(u, 16);
+                } catch (NumberFormatException e) {
                     throw new SyntaxError(line, column, "bad unicode escape: \\u" + u);
                 }
 
@@ -382,67 +365,56 @@ public class Tokenizer
         }
     }
 
-    private void skipQuote()
-    {
+    private void skipQuote() {
         assert '\'' == ch || '"' == ch;
         final char quote = ch;
         final short sLine = line;
         final short sCol = column;
 
-        while (getch() != EOT)
-        {
-            if (quote == ch)
+        while (getch() != EOT) {
+            if (quote == ch) {
                 return;
+            }
 
-            if ((quote == '"') && ('\\' == ch))
+            if ((quote == '"') && ('\\' == ch)) {
                 escape();
+            }
         }
 
         throw new EOFError(sLine, sCol, "unexpected EOT looking for matching quote: "
-            + quote);
+                + quote);
     }
 
-    private void skipSpace()
-    {
-        while (true)
-        {
-            while (isBlank(ch))
-            {
+    private void skipSpace() {
+        while (true) {
+            while (isBlank(ch)) {
                 getch();
             }
 
             // skip continuation lines, but not other escapes
-            if (('\\' == ch) && (peek() == '\n'))
-            {
+            if (('\\' == ch) && (peek() == '\n')) {
                 getch();
                 getch();
                 continue;
             }
 
             // skip comments
-            if (('/' == ch) || ('#' == ch))
-            {
-                if (('#' == ch) || (peek() == '/'))
-                {
-                    while ((getch() != EOT) && ('\n' != ch))
-                    {
+            if (('/' == ch) || ('#' == ch)) {
+                if (('#' == ch) || (peek() == '/')) {
+                    while ((getch() != EOT) && ('\n' != ch)) {
                     }
                     continue;
-                }
-                else if ('*' == peek())
-                {
+                } else if ('*' == peek()) {
                     short sLine = line;
                     short sCol = column;
                     getch();
 
-                    while ((getch() != EOT) && !(('*' == ch) && (peek() == '/')))
-                    {
+                    while ((getch() != EOT) && !(('*' == ch) && (peek() == '/'))) {
                     }
 
-                    if (EOT == ch)
-                    {
+                    if (EOT == ch) {
                         throw new EOFError(sLine, sCol,
-                            "unexpected EOT looking for closing comment: */");
+                                "unexpected EOT looking for closing comment: */");
                     }
 
                     getch();
@@ -455,73 +427,63 @@ public class Tokenizer
         }
     }
 
-    private boolean isBlank(char ch)
-    {
+    private boolean isBlank(char ch) {
         return ' ' == ch || '\t' == ch;
     }
 
-    private boolean isName(char ch)
-    {
-        return Character.isJavaIdentifierPart(ch) && (ch != '$') || ('.' == ch);
+    private boolean isName(char ch) {
+        return isJavaIdentifierPart(ch) && (ch != '$') || ('.' == ch);
     }
 
     /**
      * expand variables, quotes and escapes in word.
+     *
      * @param vars
      * @return
      */
-    public static Object expand(CharSequence word, Evaluate eval)
-    {
+    public static Object expand(CharSequence word, Evaluate eval) {
         return expand(word, eval, false);
     }
 
     private static Object expand(CharSequence word, Evaluate eval,
-        boolean inQuote)
-    {
+            boolean inQuote) {
         final String special = "$\\\"'";
         int i = word.length();
 
-        while ((--i >= 0) && (special.indexOf(word.charAt(i)) == -1))
-        {
+        while ((--i >= 0) && (special.indexOf(word.charAt(i)) == -1)) {
         }
 
         // shortcut if word doesn't contain any special characters
-        if (i < 0)
+        if (i < 0) {
             return word;
+        }
 
         return new Tokenizer(word, eval, inQuote).expand();
     }
 
-    public Object expand(CharSequence word, short line, short column)
-    {
-        return expand(new Token(Type.WORD, word, line, column), evaluate, inQuote);
+    public Object expand(CharSequence word, short line, short column) {
+        return expand(new Token(WORD, word, line, column), evaluate, inQuote);
     }
 
-    private Token word(CharSequence value)
-    {
-        return new Token(Type.WORD, value, line, column);
+    private Token word(CharSequence value) {
+        return new Token(WORD, value, line, column);
     }
 
-    private Object expand()
-    {
+    private Object expand() {
         StringBuilder buf = new StringBuilder();
 
-        while (ch != EOT)
-        {
+        while (ch != EOT) {
             int start = index;
 
-            switch (ch)
-            {
+            switch (ch) {
                 case '$':
                     Object val = expandVar();
 
-                    if (EOT == ch && buf.length() == 0)
-                    {
+                    if (EOT == ch && buf.length() == 0) {
                         return val;
                     }
 
-                    if (null != val)
-                    {
+                    if (null != val) {
                         buf.append(val);
                     }
 
@@ -529,7 +491,7 @@ public class Tokenizer
 
                 case '\\':
                     ch = (inQuote && ("u$\\\n\"".indexOf(peek()) == -1)) ? '\\'
-                        : escape();
+                            : escape();
 
                     if (ch != '\0') // ignore line continuation
                     {
@@ -545,32 +507,28 @@ public class Tokenizer
                     value = ww;
                     Object expand = expand(value, evaluate, true);
 
-                    if (eot() && buf.length() == 0 && value.equals(expand))
-                    {
+                    if (eot() && buf.length() == 0 && value.equals(expand)) {
                         return ww.value;
                     }
 
-                    if (null != expand)
-                    {
+                    if (null != expand) {
                         buf.append(expand.toString());
                     }
                     break;
 
                 case '\'':
-                    if (!inQuote)
-                    {
+                    if (!inQuote) {
                         skipQuote();
                         value = text.subSequence(start, index - 1);
 
-                        if (eot() && buf.length() == 0)
-                        {
+                        if (eot() && buf.length() == 0) {
                             return value;
                         }
 
                         buf.append(value);
                         break;
                     }
-                    // else fall through
+                // else fall through
                 default:
                     buf.append(ch);
             }
@@ -581,31 +539,23 @@ public class Tokenizer
         return buf.toString();
     }
 
-    private Object expandVar()
-    {
+    private Object expandVar() {
         assert '$' == ch;
         Object val;
 
-        if (getch() != '{')
-        {
+        if (getch() != '{') {
             int start = index - 1;
-            while (isName(ch))
-            {
+            while (isName(ch)) {
                 getch();
             }
 
-            if (index - 1 == start)
-            {
+            if (index - 1 == start) {
                 val = "$";
-            }
-            else
-            {
+            } else {
                 String name = text.subSequence(start, index - 1).toString();
                 val = evaluate.get(name);
             }
-        }
-        else
-        {
+        } else {
             // ${NAME[[:]-+=?]WORD}
             short sLine = line;
             short sCol = column;
@@ -613,10 +563,8 @@ public class Tokenizer
             char c;
             int i = 0;
 
-            while (i < group.length())
-            {
-                switch (group.charAt(i))
-                {
+            while (i < group.length()) {
+                switch (group.charAt(i)) {
                     case ':':
                     case '-':
                     case '+':
@@ -633,55 +581,45 @@ public class Tokenizer
 
             sCol += i;
 
-            String name = String.valueOf(expand(group.subSequence(0, i), sLine, sCol));
+            String name = valueOf(expand(group.subSequence(0, i), sLine, sCol));
 
-            for (int j = 0; j < name.length(); ++j)
-            {
-                if (!isName(name.charAt(j)))
-                {
+            for (int j = 0; j < name.length(); ++j) {
+                if (!isName(name.charAt(j))) {
                     throw new SyntaxError(sLine, sCol, "bad name: ${" + group + "}");
                 }
             }
 
             val = evaluate.get(name);
 
-            if (i < group.length())
-            {
+            if (i < group.length()) {
                 c = group.charAt(i++);
-                if (':' == c)
-                {
+                if (':' == c) {
                     c = (i < group.length() ? group.charAt(i++) : EOT);
                 }
 
                 CharSequence word = group.subSequence(i, group.length());
 
-                switch (c)
-                {
+                switch (c) {
                     case '-':
                     case '=':
-                        if (null == val)
-                        {
+                        if (null == val) {
                             val = expand(word, evaluate, false);
-                            if ('=' == c)
-                            {
+                            if ('=' == c) {
                                 evaluate.put(name, val);
                             }
                         }
                         break;
 
                     case '+':
-                        if (null != val)
-                        {
+                        if (null != val) {
                             val = expand(word, evaluate, false);
                         }
                         break;
 
                     case '?':
-                        if (null == val)
-                        {
+                        if (null == val) {
                             val = expand(word, evaluate, false);
-                            if (null == val || val.toString().length() == 0)
-                            {
+                            if (null == val || val.toString().length() == 0) {
                                 val = "parameter not set";
                             }
                             throw new IllegalArgumentException(name + ": " + val);
@@ -690,7 +628,7 @@ public class Tokenizer
 
                     default:
                         throw new SyntaxError(sLine, sCol, "bad substitution: ${" + group
-                            + "}");
+                                + "}");
                 }
             }
             getch();
@@ -701,29 +639,24 @@ public class Tokenizer
 
     /**
      * returns true if getch() will return EOT
+     *
      * @return
      */
-    private boolean eot()
-    {
+    private boolean eot() {
         return index >= text.length();
     }
 
-    private char getch()
-    {
+    private char getch() {
         return ch = getch(false);
     }
 
-    private char peek()
-    {
+    private char peek() {
         return getch(true);
     }
 
-    private char getch(boolean peek)
-    {
-        if (eot())
-        {
-            if (!peek)
-            {
+    private char getch(boolean peek) {
+        if (eot()) {
+            if (!peek) {
                 ++index;
                 ch = EOT;
             }
@@ -733,20 +666,18 @@ public class Tokenizer
         int current = index;
         char c = text.charAt(index++);
 
-        if (('\r' == c) && !eot() && (text.charAt(index) == '\n'))
+        if (('\r' == c) && !eot() && (text.charAt(index) == '\n')) {
             c = text.charAt(index++);
-
-        if (peek)
-        {
-            index = current;
         }
-        else if ('\n' == c)
-        {
+
+        if (peek) {
+            index = current;
+        } else if ('\n' == c) {
             ++line;
             column = 0;
-        }
-        else
+        } else {
             ++column;
+        }
 
         return c;
     }

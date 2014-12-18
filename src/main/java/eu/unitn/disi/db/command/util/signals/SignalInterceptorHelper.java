@@ -47,6 +47,7 @@ public final class SignalInterceptorHelper implements SignalHandler {
         oldHandler = Signal.handle(signal, this);
     }
 
+    @Override
     public void handle(Signal sig) {
         if (interceptor.handle(sig.getName()) && (oldHandler != null)) {
             oldHandler.handle(sig);

@@ -23,5 +23,5 @@ package eu.unitn.disi.db.command.algorithmic;
  * @author Davide Mottin <mottin@disi.unitn.eu>
  */
 public @interface AlgorithmOutput {
-    
+    public String description() default "";
 }

@@ -17,14 +17,17 @@
  */
 package eu.unitn.disi.db.command;
 
+import eu.unitn.disi.db.command.global.ConsoleHandler;
+import static eu.unitn.disi.db.command.global.ConsoleHandler.getInstance;
+
 /**
  * This command console allows the dynamic loading of commands. 
  * @author Davide Mottin <mottin@disi.unitn.eu>
  */
-public class CommandConsole {
+public class DCMD {
         
     public static void main(String[] argss) {
-        ConsoleHandler handler = ConsoleHandler.getInstance();
+        ConsoleHandler handler = getInstance();
         handler.runConsole();
     }
 }

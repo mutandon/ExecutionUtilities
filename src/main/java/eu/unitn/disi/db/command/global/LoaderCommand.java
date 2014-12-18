@@ -15,23 +15,24 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package eu.unitn.disi.db.command;
+package eu.unitn.disi.db.command.global;
+
+import eu.unitn.disi.db.command.exceptions.ArgumentDeclarationException;
 
 /**
- *
+ * A loader command is a special Command that is able to store one object into
+ * memory. Is is particularly useful if used in conjunction with console. 
  * @author Davide Mottin <mottin@disi.unitn.eu>
  */
-public enum ParametersNumber {
-    ONE(1), 
-    TWO(2);
+public abstract class LoaderCommand extends Command {
+
+    protected Object loadedObject;
+
+    public LoaderCommand() throws ArgumentDeclarationException {
+        super(); 
+    }
     
-    private int num;
-    ParametersNumber(int num) {
-        this.num = num;
+    public Object getObject() {
+        return loadedObject;
     }
-
-    public int getNum() {
-        return num;
-    }
-
 }
