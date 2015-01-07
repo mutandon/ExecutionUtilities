@@ -15,54 +15,39 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
+
 package eu.unitn.disi.db.command.global;
 
 import eu.unitn.disi.db.command.PositionalInput;
 import eu.unitn.disi.db.command.exceptions.ExecutionException;
 import eu.unitn.disi.db.command.util.StringUtils;
-import java.util.Map;
 
 /**
- * Command to load (big) objects into memory and store into variables. 
+ * Command execution command
  * @author Davide Mottin <mottin@disi.unitn.eu>
  */
-@ConsoleCommand(name = "obj")
-public class Obj extends Command {
-    private String variable; 
+@ConsoleCommand(name = "exec")
+public class Exec extends Command {
     private String command; 
     
     @Override
     protected void execute() throws ExecutionException {
         ExecutionService global = ExecutionService.getInstance();
-        Map<String, Object> dynamicObjects = global.getDynamicObjects();
-        if (dynamicObjects.containsKey(variable)) {
-            warn("Overriding an existing object");
-        }
-        Object o = global.runCommand(StringUtils.split(command, ExecutionService.COMMAND_SEPARATOR));
-        if (o == ExecutionService.CommandError.ERROR) {
+        Object retval = global.runCommand(StringUtils.split(command, ExecutionService.COMMAND_SEPARATOR)); 
+        if (retval == ExecutionService.CommandError.ERROR) {
             throw new ExecutionException("Execution error on calling command: %s", command); 
         }
-        dynamicObjects.put(variable, o);
     }
 
     @Override
     protected String commandDescription() {
-        return "Load an object into the console using the appropriate loader";
+        return "Execute a user defined command (loaded from a jar)"; 
     }
-
+    
     @PositionalInput(
-        description = "the name of the variable to be stored and used (for convention better start with $[variablename]", 
-        name = "variable", 
-        position = 1
-    )
-    public void setVariable(String variable) {
-        this.variable = variable;
-    }
-
-    @PositionalInput(
-        description = "the loader command to be used", 
+        description = "the command to be executed", 
         name = "command", 
-        position = 2
+        position = 1
     )
     public void setCommand(String command) {
         this.command = command;

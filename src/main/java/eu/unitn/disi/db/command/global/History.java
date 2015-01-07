@@ -68,7 +68,10 @@ public class History extends Command {
                         if (entry > numEntries || entry > history.size()) {
                             error("Invalid entry, please type a valid one");
                         } else {
-                            global.runCommand(history.get(history.size() - entry).getSecond(), true);
+                            Object retval = global.runCommand(history.get(history.size() - entry).getSecond(), true); 
+                            if (retval == ExecutionService.CommandError.ERROR) {
+                                throw new ExecutionException("Execution error on calling command: %s", history.get(history.size() - entry).getFirst()); 
+                            }
                             break;
                         }
                     } catch (NumberFormatException ex) {

@@ -117,15 +117,13 @@ public class ConsoleHandler {
                         switch (mainCommand) {
                             //COmmand execution is special
                             case "exec":
-                            case "\\e":
                                 if (splittedLine.length > 1) {
-                                    global.runCommand(Arrays.copyOfRange(splittedLine, 1, splittedLine.length));
+                                    global.runCommand(new String[]{mainCommand, join(Arrays.copyOfRange(splittedLine, 1, splittedLine.length), COMMAND_SEPARATOR)}, true);
                                 } else {
                                     global.printHelp("");
                                 }
                                 break;
                             case "obj": 
-                            case "\\o":
                                 if (splittedLine.length > 2) {
                                     global.runCommand(new String[]{mainCommand, splittedLine[1], join(Arrays.copyOfRange(splittedLine, 2, splittedLine.length),COMMAND_SEPARATOR)}, true);
                                 } else {
