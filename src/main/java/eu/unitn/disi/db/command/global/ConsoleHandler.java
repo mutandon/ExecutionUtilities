@@ -39,7 +39,7 @@ public class ConsoleHandler {
 
     private final String WELCOME_MESSAGE;
     private final String EXIT_MESSAGE;
-    private static final String CONSOLE_LINE = "\bdcmd> ";
+    private static final String CONSOLE_LINE = "dcmd> ";
     private static final int PAR_SIZE = 256;
     private static final Logger logger = getLogger(ConsoleHandler.class);
 
@@ -115,7 +115,7 @@ public class ConsoleHandler {
 
                     if (null != mainCommand) {
                         switch (mainCommand) {
-                            //COmmand execution is special
+                            //Command execution is special
                             case "exec":
                                 if (splittedLine.length > 1) {
                                     global.runCommand(new String[]{mainCommand, join(Arrays.copyOfRange(splittedLine, 1, splittedLine.length), COMMAND_SEPARATOR)}, true);
@@ -142,6 +142,7 @@ public class ConsoleHandler {
                 line = in.nextLine().trim();
             } //END WHILE
             out.println(EXIT_MESSAGE);
+            System.exit(0);
         } catch (Exception ex) {
             logger.fatal("Some unexpected error happened that prevented the normal execution of the program", ex);
         }
