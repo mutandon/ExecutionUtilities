@@ -151,10 +151,16 @@ final class ExecutionService extends LoggableObject {
 
     public Object runCommand(String[] args, Map<String, Object> dynamicObjects, boolean console) {
         Object obj = new Object();
+        String[] decodedArgs; 
         Command c;
         try {
             if (console) {
+                decodedArgs = new String[args.length];
+                for (int i = 0; i < decodedArgs.length; i++) {
+                    decodedArgs[i] = args[i].replace(COMMAND_SEPARATOR, ""); 
+                }
                 c = (Command) consoleCommands.get(args[0].toLowerCase()).newInstance();
+                history.add(new Pair<>(StringUtils.join(decodedArgs, " "), args));
             } else {
                 JclObjectFactory commandFactory = JclObjectFactory.getInstance();
                 c = (Command) commandFactory.create(commandLoader, loadedCommands.get(args[0].toLowerCase()).getName());            
@@ -167,7 +173,6 @@ final class ExecutionService extends LoggableObject {
             if (c instanceof LoaderCommand) {
                 obj = ((LoaderCommand) c).getObject();
             }
-            history.add(new Pair<>(StringUtils.join(args, " "), args));
         } catch (WrongParameterException ex) {
             error("Wrong parameter: %s", ex.getMessage());
             obj = CommandError.ERROR;

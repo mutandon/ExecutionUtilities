@@ -52,7 +52,7 @@ public class History extends Command {
             LinkedHashSet<HashedPair<String, String[]>> tmp = new LinkedHashSet<>();
             Pair<String,String[]> cmd; 
             for (int i = 0; i < numEntries && i < global.history.size(); i++) {
-                cmd = global.history.get(i);
+                cmd = global.history.get(global.history.size() - 1 - i);
                 tmp.add(new HashedPair<>(cmd.getFirst(), cmd.getSecond()));
             }
             history = new ArrayList<>(tmp);
