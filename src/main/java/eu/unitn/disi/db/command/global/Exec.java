@@ -35,7 +35,7 @@ public class Exec extends Command {
         ExecutionService global = ExecutionService.getInstance();
         Object retval = global.runCommand(StringUtils.split(command, ExecutionService.COMMAND_SEPARATOR)); 
         if (retval == ExecutionService.CommandError.ERROR) {
-            throw new ExecutionException("Execution error on calling command: %s", command); 
+            throw new ExecutionException("Execution error on calling command: %s", command.replace(ExecutionService.COMMAND_SEPARATOR, " ")); 
         }
     }
 

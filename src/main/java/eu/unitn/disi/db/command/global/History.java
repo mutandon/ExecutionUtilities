@@ -68,9 +68,9 @@ public class History extends Command {
                         if (entry > numEntries || entry > history.size()) {
                             error("Invalid entry, please type a valid one");
                         } else {
-                            Object retval = global.runCommand(history.get(history.size() - entry).getSecond(), true); 
+                            Object retval = global.runCommand(history.get(entry - 1).getSecond(), true); 
                             if (retval == ExecutionService.CommandError.ERROR) {
-                                throw new ExecutionException("Execution error on calling command: %s", history.get(history.size() - entry).getFirst()); 
+                                throw new ExecutionException("Execution error on calling command: %s", history.get(entry - 1).getFirst()); 
                             }
                             break;
                         }
@@ -112,7 +112,9 @@ public class History extends Command {
     
     private void showHistory(ExecutionService global, List<? extends Pair<String,String[]>> history) { 
         for (int i = 0; i < history.size() && i < numEntries; i++) {
-            global.out().printf("[%d] %s\n", i + 1, history.get(history.size() - i - 1).getFirst());
+            if (!"hist".equals(history.get(i).getSecond()[0])) {
+                global.out().printf("[%d] %s\n", i + 1, history.get(i).getFirst());
+            }
         }
     }
     

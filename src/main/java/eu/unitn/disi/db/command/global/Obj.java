@@ -40,7 +40,7 @@ public class Obj extends Command {
         }
         Object o = global.runCommand(StringUtils.split(command, ExecutionService.COMMAND_SEPARATOR));
         if (o == ExecutionService.CommandError.ERROR) {
-            throw new ExecutionException("Execution error on calling command: %s", command); 
+            throw new ExecutionException("Execution error on calling command: %s", command.replace(ExecutionService.COMMAND_SEPARATOR, " ")); 
         }
         dynamicObjects.put(variable, o);
     }
