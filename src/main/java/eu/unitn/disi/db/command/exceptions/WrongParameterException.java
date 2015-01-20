@@ -18,11 +18,11 @@
 package eu.unitn.disi.db.command.exceptions;
 
 /**
- * Exception raies if there is wrong instance of the parameters in the command
+ * Exception raises if there is wrong instance of the parameters in the command
  * @author Davide Mottin <mottin@disi.unitn.eu>
  */
 public class WrongParameterException extends GenericException {
-    
+
     public WrongParameterException(Throwable cause) {
         super(cause);
     }
