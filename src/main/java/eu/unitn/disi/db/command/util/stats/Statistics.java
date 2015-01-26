@@ -17,8 +17,6 @@
  */
 package eu.unitn.disi.db.command.util.stats;
 
-import eu.unitn.disi.db.command.util.FileWriteOperation.Mode;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
@@ -28,8 +26,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -71,7 +67,7 @@ public class Statistics implements Iterable<List<String>>{
     /**
      *
      * @param name
-     * @return
+     * @return true if the filed was added, false if the field exists already
      */
     public boolean addStringField(String name){
         if(stringValues.containsKey(name)){
@@ -89,7 +85,7 @@ public class Statistics implements Iterable<List<String>>{
     /**
      *
      * @param name
-     * @return
+     * @return true if the filed was added, false if the field exists already
      */
     public boolean addNumericField(String name){
         if(numericValues.containsKey(name)){
@@ -109,7 +105,7 @@ public class Statistics implements Iterable<List<String>>{
      *
      * @param column
      * @param value
-     * @return
+     * @return the number of values in the column, after adding the passed value
      */
     public int addStringValue(String column, String value){
         if(!stringValues.containsKey(column)){
@@ -128,7 +124,7 @@ public class Statistics implements Iterable<List<String>>{
      *
      * @param column
      * @param value
-     * @return
+     * @return the number of values in the column, after adding the passed value
      */
     public int addNumericValue(String column, Double value){
         if(!numericValues.containsKey(column)){
@@ -144,7 +140,7 @@ public class Statistics implements Iterable<List<String>>{
      *
      * @param column
      * @param value
-     * @return
+     * @return the number of values in the column, after adding the passed value
      */
     public int addNumericValue(String column, Integer value){
         if(!numericValues.containsKey(column)){
@@ -160,7 +156,7 @@ public class Statistics implements Iterable<List<String>>{
      *
      * @param column
      * @param value
-     * @return
+     * @return the number of values in the column, after adding the passed value
      */
     public int addNumericValue(String column, Long value){
         if(!numericValues.containsKey(column)){
@@ -177,7 +173,7 @@ public class Statistics implements Iterable<List<String>>{
      *
      * @param column
      * @param value
-     * @return
+     * @return the number of values in the column, after adding the passed value
      */
     public int addNumericValue(String column, BigDecimal value){
         if(!numericValues.containsKey(column)){
@@ -192,17 +188,17 @@ public class Statistics implements Iterable<List<String>>{
 
     /**
      *
-     * @param colId
-     * @return
+     * @param i
+     * @return the average of the values in the i-th column
      */
-    public Double getAverage(int colId){
-        return this.getAverage(this.getNumericFiedName(colId));
+    public Double getAverage(int i){
+        return this.getAverage(this.getNumericFiedName(i));
     }
 
     /**
      *
      * @param column
-     * @return
+     * @return the average of the values in that column
      */
     public Double getAverage(String column){
         if(!numericValues.containsKey(column)){
@@ -225,17 +221,17 @@ public class Statistics implements Iterable<List<String>>{
 
     /**
      *
-     * @param colId
-     * @return
+     * @param i
+     * @return the median of the valued in the i-th column
      */
-    public Double getMedian(int colId){
-        return this.getMedian(this.getNumericFiedName(colId));
+    public Double getMedian(int i){
+        return this.getMedian(this.getNumericFiedName(i));
     }
 
     /**
      *
      * @param column
-     * @return
+     * @return the median of the values in that column
      */
     public Double getMedian(String column){
         if(!numericValues.containsKey(column)){
@@ -259,8 +255,9 @@ public class Statistics implements Iterable<List<String>>{
     }
 
     /**
+     * Get all the names of all the columns, textual fields first, then numeric fields
      *
-     * @return
+     * @return the list of field names
      */
     public ArrayList<String> getFields(){
         ArrayList<String> fields = new ArrayList<>(this.stringColumns.size() + this.numericColumns.size() );
@@ -269,19 +266,28 @@ public class Statistics implements Iterable<List<String>>{
         return fields;
     }
 
-
+    /**
+     * Get the name of the i-th field among the textual columns
+     * @param i
+     * @return the name of the field
+     */
     public String getStringFieldName(int i){
         return this.stringColumns.get(i);
     }
 
+    /**
+     * Get the name of the i-th field among the numeric columns
+     * @param i
+     * @return the name of the field
+     */
     public String getNumericFiedName(int i){
         return this.numericColumns.get(i);
     }
 
     /**
-     *
+     * Get the row at i-th position in the the table of statistics
      * @param i
-     * @return
+     * @return the Row as List of Strings, each String is the value in une cell
      */
     public ArrayList<String> getRow(int i){
 
@@ -327,53 +333,4 @@ public class Statistics implements Iterable<List<String>>{
         }
 
     }
-
-    public static void main(String[] args){
-
-        ArrayList<Double> numsD = new ArrayList<>();
-        ArrayList<Integer> numsI = new ArrayList<>();
-
-        Statistics s = new Statistics();
-
-        System.out.println("" +s.addStringField("Names"));
-
-        System.out.println("" +s.addNumericField("Doubls"));
-        System.out.println("" +s.addNumericField("Ints"));
-
-
-        for (int i = 0; i < 13; i++) {
-
-            Double dN = Math.random()*100+0.1*i;
-            Integer iN = (int)Math.floor(dN.intValue());
-            numsI.add(iN);
-            numsD.add(dN);
-
-            s.addStringValue("Names", "i: "+ iN + "  " + dN);
-            s.addNumericValue("Doubls", dN);
-            s.addNumericValue("Ints", iN);
-        }
-
-
-
-        for(List<String> row : s){
-            System.out.println("" + row);
-        }
-
-        System.out.println("Doubles " + numsD);
-        System.out.println("Doubles AVG " + s.getAverage(0)  + "   MDN " + s.getMedian("Doubls") );
-
-        System.out.println("\n\nIntegers " + numsI);
-        System.out.println("Integers AVG " + s.getAverage(1)  + "   MDN " + s.getMedian("Ints") );
-
-        StatisticsCSVExporter se = new StatisticsCSVExporter(s, Mode.CREATE_NEW);
-        try {
-            se.write("/tmp/Export.csv");
-        } catch (IOException ex) {
-            Logger.getLogger(Statistics.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-
-
-    }
-
 }

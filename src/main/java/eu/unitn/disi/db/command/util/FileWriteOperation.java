@@ -19,13 +19,14 @@ package eu.unitn.disi.db.command.util;
 
 import java.io.IOException;
 import java.nio.file.OpenOption;
+import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 
 /**
- *
+ * Interface for any operation that writes to a File
  * Handles correct Open Options for writing to files
  *
- * Supported configurations are
+ * Supported configurations are in {@link #Mode}
  *
  *
  * @author Matteo Lissandrini <ml@disi.unitn.eu>
@@ -53,7 +54,7 @@ public interface FileWriteOperation {
         APPEND;
 
         /**
-         * the option configuration needed to pass to a BufferedWriter in order
+         * the options configuration needed to pass to a BufferedWriter in order
          * to obtain the desired write behavior
          *
          * @return the array of Open Options to be provided to the Writer
@@ -86,8 +87,21 @@ public interface FileWriteOperation {
 
     }
 
-    public void write(String s, Mode m) throws IOException;
-    
-    public void write(String s) throws IOException;
+    /**
+     * Writes the string to file with the specified Behavior
+     *
+     * @param p the path to the file to write onto
+     * @param m the OpenOption Mode
+     * @throws IOException
+     */
+    public void write(Path p, Mode m) throws IOException;
+
+    /**
+     * Writes the string to file with a non specified Default mode
+     *
+     * @param p the path to the file to write onto
+     * @throws IOException
+     */
+    public void write(Path p) throws IOException;
 
 }

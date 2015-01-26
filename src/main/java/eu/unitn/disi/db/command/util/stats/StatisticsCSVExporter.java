@@ -24,13 +24,13 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.OpenOption;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Exports a Statistic object with CSV format
+ *
  *
  * @author Matteo Lissandrini <ml@disi.unitn.eu>
  */
@@ -76,14 +76,13 @@ public class StatisticsCSVExporter extends StatisticsExporter implements FileWri
 
 
     @Override
-    public void write(String location) throws IOException {
+    public void write(Path location) throws IOException {
         write(location, this.mode);
     }
 
     @Override
-    public void write(String location, Mode m) throws IOException {
-        Path p = Paths.get(location);
-        try (BufferedWriter writer = Files.newBufferedWriter(p, StandardCharsets.UTF_8, m.getWriteOptions())) {
+    public void write(Path location, Mode m) throws IOException {
+        try (BufferedWriter writer = Files.newBufferedWriter(location, StandardCharsets.UTF_8, m.getWriteOptions())) {
             writer.write(this.export());
         }
     }
