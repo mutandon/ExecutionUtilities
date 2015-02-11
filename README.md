@@ -107,14 +107,16 @@ help [command]
 	show the help for a specific command or this help if no command provided
 jar JARFILE -lib LIBDIR
 	load the jar file with the commands and the optiona libraries from LIBDIR 	directory
-obj $VARIABLE LOADER [params]
+obj $VARIABLE (LOADER [params])
 	load or unload (if option -d $VARIABLE is present) an object into $variable using the specific loader
-exec COMMAND [params]
+exec (COMMAND [params])
 	execute COMMAND with the specific parameters
 batch BATCHFILE [-s] 
 	execute a batch file with commands, put -s to stop
 hist [-n ENTRIES] [-r]
 ```
+**Notice.** Round braces around command specification in _exec_ and _obj_ are now mandatory! 
+
 
 * ```jar```defines the jar with the commands to be loaded, you can also optionally specify a lib directory.
 * ```obj``` is specifically designed to load big objects into main memory and store into a variable (see below). The variable name can subsequantely be used in a command to pass objects to the command itself. 
