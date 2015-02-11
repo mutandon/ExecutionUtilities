@@ -19,7 +19,6 @@ package eu.unitn.disi.db.command.global;
 
 import eu.unitn.disi.db.command.PositionalInput;
 import eu.unitn.disi.db.command.exceptions.ExecutionException;
-import eu.unitn.disi.db.command.util.StringUtils;
 import java.util.Map;
 
 /**
@@ -38,11 +37,14 @@ public class Obj extends Command {
         if (dynamicObjects.containsKey(variable)) {
             warn("Overriding an existing object");
         }
-        Object o = global.runCommand(StringUtils.split(command, ExecutionService.COMMAND_SEPARATOR));
-        if (o == ExecutionService.CommandError.ERROR) {
-            throw new ExecutionException("Execution error on calling command: %s", command.replace(ExecutionService.COMMAND_SEPARATOR, " ")); 
-        }
-        dynamicObjects.put(variable, o);
+        Object retval = global.runCommand(ExecutionService.tokenizeCommand(command));
+        if (retval instanceof ExecutionService.CommandError) {
+            throw new ExecutionException("Execution error on calling command: %s", command); 
+        } 
+//        else  if (retval == ExecutionService.CommandError.NOT_EXISTS) {
+//            throw new NullPointerException(String.format("Command does not exists: %s", command)); 
+//        }
+        dynamicObjects.put(variable, retval);
     }
 
     @Override

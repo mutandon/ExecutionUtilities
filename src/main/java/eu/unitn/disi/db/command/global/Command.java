@@ -76,6 +76,10 @@ public abstract class Command extends LoggableObject {
      * Execution time for the command.
      */
     private long executionTime; 
+    /*
+     * Determines if this command is a launcher
+    */
+    private boolean launcher;
     
     
     
@@ -100,7 +104,7 @@ public abstract class Command extends LoggableObject {
      * @return The help message
      */
     public String help() {
-        StringBuilder sb = new StringBuilder(commandDescription());
+        StringBuilder sb = new StringBuilder(commandDescription());        
         sb.append("\n");
         if (!positionalDescriptions.isEmpty()) {
             sb.append("\npositional arguments:\n");
@@ -137,7 +141,8 @@ public abstract class Command extends LoggableObject {
         dynamicDescriptions = new LinkedHashMap<>();
         positionalDescriptions = new LinkedHashMap<>(); 
         String description;
-        
+                
+        //Check method annotations and store into the respective variables
         for (Method method : methods) {
             inputDescription = method.getAnnotation(CommandInput.class);
             dynamicDescription = method.getAnnotation(DynamicInput.class);

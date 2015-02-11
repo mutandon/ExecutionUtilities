@@ -21,6 +21,7 @@ package eu.unitn.disi.db.command.global;
 import eu.unitn.disi.db.command.CommandInput;
 import eu.unitn.disi.db.command.exceptions.ExecutionException;
 import eu.unitn.disi.db.command.util.Pair;
+import eu.unitn.disi.db.command.util.Tokenizer;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -56,6 +57,10 @@ public class History extends Command {
                 tmp.add(new HashedPair<>(cmd.getFirst(), cmd.getSecond()));
             }
             history = new ArrayList<>(tmp);
+        }
+        if (history.isEmpty()) {
+            warn("History is empty");
+            return; 
         }
         showHistory(global, history);
         try {
@@ -110,7 +115,7 @@ public class History extends Command {
     }
     
     
-    private void showHistory(ExecutionService global, List<? extends Pair<String,String[]>> history) { 
+    private void showHistory(ExecutionService global, List<? extends Pair<String, String[]>> history) { 
         for (int i = 0; i < history.size() && i < numEntries; i++) {
             if (!"hist".equals(history.get(i).getSecond()[0])) {
                 global.out().printf("[%d] %s\n", i + 1, history.get(i).getFirst());

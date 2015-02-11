@@ -26,6 +26,7 @@ import eu.unitn.disi.db.command.exceptions.WrongParameterException;
 import eu.unitn.disi.db.command.util.LoggableObject;
 import eu.unitn.disi.db.command.util.Pair;
 import eu.unitn.disi.db.command.util.StringUtils;
+import eu.unitn.disi.db.command.util.Tokenizer;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.lang.annotation.Annotation;
@@ -61,11 +62,12 @@ final class ExecutionService extends LoggableObject {
     private InputStream in = System.in; 
     private static final String EMPTY_COMMAND = "                     ";
     private static final String NOT_EXISTING_ERROR = "Hey, command '%s' doesn't exist, try again ;-)";
-    public static final String COMMAND_SEPARATOR = "=%=";
-    public static final String BATCH_COMMENT = "#";
-    
+    public static final String BATCH_COMMENT = "#";    
+    private static final int PAR_SIZE = 256;
+
     public enum CommandError {
-        ERROR
+        ERROR, 
+        NOT_EXISTS
     }
     
     
@@ -151,16 +153,10 @@ final class ExecutionService extends LoggableObject {
 
     public Object runCommand(String[] args, Map<String, Object> dynamicObjects, boolean console) {
         Object obj = new Object();
-        String[] decodedArgs; 
         Command c;
         try {
             if (console) {
-                decodedArgs = new String[args.length];
-                for (int i = 0; i < decodedArgs.length; i++) {
-                    decodedArgs[i] = args[i].replace(COMMAND_SEPARATOR, ""); 
-                }
                 c = (Command) consoleCommands.get(args[0].toLowerCase()).newInstance();
-                history.add(new Pair<>(StringUtils.join(decodedArgs, " "), args));
             } else {
                 JclObjectFactory commandFactory = JclObjectFactory.getInstance();
                 c = (Command) commandFactory.create(commandLoader, loadedCommands.get(args[0].toLowerCase()).getName());            
@@ -181,7 +177,7 @@ final class ExecutionService extends LoggableObject {
             obj = CommandError.ERROR;
         } catch (NullPointerException cnfex) {
             error(NOT_EXISTING_ERROR, args[0]);
-            obj = CommandError.ERROR;
+            obj = CommandError.NOT_EXISTS;
         } catch (Exception ex) {
             fatal("Some other problem occurred on command call, message: %s ", ex, ex.getMessage());
             obj = CommandError.ERROR;
@@ -269,4 +265,21 @@ final class ExecutionService extends LoggableObject {
         return m.getParameterTypes().length == 1;
     }
 
+    public static String[] tokenizeCommand(String command) {
+        String[] tokenizedCommand; 
+        Tokenizer tok = new Tokenizer(command);
+        CharSequence[] tokenized = new String[PAR_SIZE];
+        int countTokens = 0;
+        CharSequence value; 
+        tok.next();
+        while ((value = tok.value()) != null) {
+            tokenized[countTokens] = value;
+            tok.next();
+            countTokens++;
+        }
+        tokenizedCommand = new String[countTokens];
+        System.arraycopy(tokenized, 0, tokenizedCommand, 0, countTokens);
+        return tokenizedCommand; 
+    }
+    
 }

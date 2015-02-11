@@ -34,7 +34,8 @@ import java.util.Set;
 import org.xeustechnologies.jcl.JarClassLoader;
 
 /**
- *
+ * Load jars and libraries into the current class loader. Allows dynamic
+ * loading of new jars. 
  * @author Davide Mottin <mottin@disi.unitn.eu>
  */
 @ConsoleCommand(name = "jar")

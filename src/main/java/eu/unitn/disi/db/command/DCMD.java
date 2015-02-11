@@ -26,7 +26,7 @@ import static eu.unitn.disi.db.command.global.ConsoleHandler.getInstance;
  */
 public class DCMD {
         
-    public static void main(String[] argss) {
+    public static void main(String[] argss) {        
         ConsoleHandler handler = getInstance();
         handler.runConsole();
     }

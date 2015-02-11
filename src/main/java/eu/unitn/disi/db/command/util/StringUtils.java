@@ -25,6 +25,9 @@ import java.util.regex.Pattern;
  * @author Davide Mottin <mottin@disi.unitn.eu>
  */
 public final class StringUtils {
+    public static final String PUNCT_BLANK_SPLITTER = "[\\\\p{Space}\\\\p{Punct}]+";
+    public static final Pattern PUNCT_BLANK_PATTERN = Pattern.compile(PUNCT_BLANK_SPLITTER);
+    
     private StringUtils() {}
 
     /**

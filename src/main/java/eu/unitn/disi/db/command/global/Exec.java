@@ -20,10 +20,9 @@ package eu.unitn.disi.db.command.global;
 
 import eu.unitn.disi.db.command.PositionalInput;
 import eu.unitn.disi.db.command.exceptions.ExecutionException;
-import eu.unitn.disi.db.command.util.StringUtils;
 
 /**
- * Command execution command
+ * Command that executes other commands in the command console
  * @author Davide Mottin <mottin@disi.unitn.eu>
  */
 @ConsoleCommand(name = "exec")
@@ -33,10 +32,13 @@ public class Exec extends Command {
     @Override
     protected void execute() throws ExecutionException {
         ExecutionService global = ExecutionService.getInstance();
-        Object retval = global.runCommand(StringUtils.split(command, ExecutionService.COMMAND_SEPARATOR)); 
+        Object retval = global.runCommand(ExecutionService.tokenizeCommand(command)); 
         if (retval == ExecutionService.CommandError.ERROR) {
-            throw new ExecutionException("Execution error on calling command: %s", command.replace(ExecutionService.COMMAND_SEPARATOR, " ")); 
-        }
+            throw new ExecutionException("Execution error on calling command: %s", command); 
+        } 
+//        else  if (retval == ExecutionService.CommandError.NOT_EXISTS) {
+//            throw new NullPointerException(String.format("Command does not exists: %s", command)); 
+//        }
     }
 
     @Override

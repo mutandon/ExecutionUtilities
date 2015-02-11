@@ -21,7 +21,6 @@ package eu.unitn.disi.db.command.global;
 import eu.unitn.disi.db.command.CommandInput;
 import eu.unitn.disi.db.command.PositionalInput;
 import eu.unitn.disi.db.command.exceptions.ExecutionException;
-import eu.unitn.disi.db.command.util.Tokenizer;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.FileSystems;
@@ -44,35 +43,20 @@ public class Batch extends Command {
     protected void execute() throws ExecutionException {
         Path p;
         List<String> lines; 
-        Tokenizer tok; 
-        CharSequence[] tokenized; 
-        String[] splittedLine; 
-        int countTokens; 
-        CharSequence value; 
+        String[] tokenizedCommand; 
         ExecutionService global = ExecutionService.getInstance();
         Object retval;
-        
         p = FileSystems.getDefault().getPath(batchFile);
+        
         try {
             lines = Files.readAllLines(p, Charset.defaultCharset());
             for (String line : lines) {
                 if (line != null) {
-                    line = line.trim(); 
+                    line = line.trim();
                     if (!"".equals(line) && !line.startsWith(ExecutionService.BATCH_COMMENT)) {
-                        tok = new Tokenizer(line);
-                        tokenized = new String[256];
-                        countTokens = 0;
-
-                        tok.next();
-                        while ((value = tok.value()) != null) {
-                            tokenized[countTokens] = value;
-                            tok.next();
-                            countTokens++;
-                        }
-                        splittedLine = new String[countTokens];
-                        System.arraycopy(tokenized, 0, splittedLine, 0, countTokens);
-                        retval = global.runCommand(splittedLine, true);
-                        if (stop && retval == ExecutionService.CommandError.ERROR) {
+                        tokenizedCommand = ExecutionService.tokenizeCommand(line);
+                        retval = global.runCommand(tokenizedCommand, true);
+                        if (stop && retval instanceof ExecutionService.CommandError) {
                             break; 
                         }
                     }

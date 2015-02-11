@@ -17,14 +17,13 @@
  */
 package eu.unitn.disi.db.command.global;
 
-import static eu.unitn.disi.db.command.global.ExecutionService.COMMAND_SEPARATOR;
-import static eu.unitn.disi.db.command.util.StringUtils.join;
+import eu.unitn.disi.db.command.global.ExecutionService.CommandError;
+import eu.unitn.disi.db.command.util.Pair;
 import eu.unitn.disi.db.command.util.Tokenizer;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
-import java.util.Arrays;
 import java.util.Scanner;
 import org.apache.log4j.Logger;
 import static org.apache.log4j.Logger.getLogger;
@@ -40,7 +39,6 @@ public class ConsoleHandler {
     private final String WELCOME_MESSAGE;
     private final String EXIT_MESSAGE;
     private static final String CONSOLE_LINE = "dcmd> ";
-    private static final int PAR_SIZE = 256;
     private static final Logger logger = getLogger(ConsoleHandler.class);
 
     private static class Singleton {
@@ -84,12 +82,10 @@ public class ConsoleHandler {
         ExecutionService global = ExecutionService.getInstance();
         PrintStream out = global.out();
         String line;
-        CharSequence value;
         Scanner in = new Scanner(System.in);
         Tokenizer tok;
-        CharSequence[] tokenized;
-        String[] splittedLine, params;
-        int countTokens;
+        String[] tokenizedCommand, params;
+        Object retval = null; 
         String mainCommand;
         out.println(WELCOME_MESSAGE);
         out.println();
@@ -97,44 +93,23 @@ public class ConsoleHandler {
 
         try {
             line = in.nextLine().trim();
-            while (!"exit".equals(line)) {
-                tok = new Tokenizer(line);
-                tokenized = new String[PAR_SIZE];
-                countTokens = 0;
-
-                tok.next();
-                while ((value = tok.value()) != null) {
-                    tokenized[countTokens] = value;
-                    tok.next();
-                    countTokens++;
-                }
-                splittedLine = new String[countTokens];
-                System.arraycopy(tokenized, 0, splittedLine, 0, countTokens);
-                if (splittedLine.length > 0) {
-                    mainCommand = splittedLine[0];
-
+            while (!"exit".equals(line) && !"quit".equals(line)) {
+                tokenizedCommand = ExecutionService.tokenizeCommand(line);
+                if (tokenizedCommand.length > 0) {
+                    mainCommand = tokenizedCommand[0];
+                    
                     if (null != mainCommand) {
                         switch (mainCommand) {
-                            //Command execution is special
-                            case "exec":
-                                if (splittedLine.length > 1) {
-                                    global.runCommand(new String[]{mainCommand, join(Arrays.copyOfRange(splittedLine, 1, splittedLine.length), COMMAND_SEPARATOR)}, true);
-                                } else {
-                                    global.printHelp("");
-                                }
-                                break;
-                            case "obj": 
-                                if (splittedLine.length > 2) {
-                                    global.runCommand(new String[]{mainCommand, splittedLine[1], join(Arrays.copyOfRange(splittedLine, 2, splittedLine.length),COMMAND_SEPARATOR)}, true);
-                                } else {
-                                    global.out().println("Insufficient parameters, usage: obj VARIABLE COMMAND");
-                                }
-                                break;                                
                             case "\\?": //global help
                                 global.printHelp("", "Available console commands\n", true);
                                 break;                                   
                             default: 
-                                global.runCommand(splittedLine, true);
+                                retval = global.runCommand(tokenizedCommand, true);
+                        }
+                        if (retval == null || !(retval instanceof CommandError) || CommandError.NOT_EXISTS != (CommandError)retval) {
+                            if (!"hist".equals(mainCommand.toLowerCase())) {
+                                global.history.add(new Pair<>(line, tokenizedCommand));
+                            }
                         }
                     }
                 } //END IF 
