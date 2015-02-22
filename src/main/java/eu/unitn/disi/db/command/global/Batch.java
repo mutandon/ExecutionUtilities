@@ -21,12 +21,16 @@ package eu.unitn.disi.db.command.global;
 import eu.unitn.disi.db.command.CommandInput;
 import eu.unitn.disi.db.command.PositionalInput;
 import eu.unitn.disi.db.command.exceptions.ExecutionException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 
 /**
  * Load and execute a batch of commands from file
@@ -48,8 +52,19 @@ public class Batch extends Command {
         Object retval;
         p = FileSystems.getDefault().getPath(batchFile);
         
+        
         try {
-            lines = Files.readAllLines(p, Charset.defaultCharset());
+            if (batchFile.endsWith(".js")) {
+                ScriptEngineManager manager = new ScriptEngineManager();
+                ScriptEngine engine = manager.getEngineByExtension("js");
+                
+                try (FileReader reader = new FileReader(batchFile)) {
+                    engine.eval(reader);
+                    lines = (List<String>) engine.get("commands");
+                }
+            } else {
+                lines = Files.readAllLines(p, Charset.defaultCharset());
+            }
             for (String line : lines) {
                 if (line != null) {
                     line = line.trim();
@@ -64,9 +79,14 @@ public class Batch extends Command {
             }
         } catch (IOException ex) {
             error("Cannot read batch file %s", batchFile);
+        } catch (ScriptException ex) {
+            ex.printStackTrace();
+            fatal("Javascript error in line: %d, column: %d, message: %s", ex.getLineNumber(), ex.getColumnNumber(), ex.getMessage());
+        } catch (NullPointerException ex) {
+            fatal("Malformed javascript: it must contain an ArrayList named 'commands' of string commands to be executed");
         }
     }
-
+    
     @Override
     protected String commandDescription() {
         return "Load and execute a batch of commans from file";
@@ -90,4 +110,5 @@ public class Batch extends Command {
     public void setStopExecution(boolean stop) {
         this.stop = stop; 
     }
+        
 }

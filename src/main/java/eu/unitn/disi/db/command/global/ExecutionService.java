@@ -25,7 +25,6 @@ import eu.unitn.disi.db.command.exceptions.ExecutionException;
 import eu.unitn.disi.db.command.exceptions.WrongParameterException;
 import eu.unitn.disi.db.command.util.LoggableObject;
 import eu.unitn.disi.db.command.util.Pair;
-import eu.unitn.disi.db.command.util.StringUtils;
 import eu.unitn.disi.db.command.util.Tokenizer;
 import java.io.InputStream;
 import java.io.PrintStream;
