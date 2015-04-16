@@ -15,6 +15,9 @@ The library contains also a console that can be used to dinamically load big obj
 6. Array parameters are now allowed (with inputs comma separated, no space allowed)
 7. Help for console commands
 
+## Required Packages
+* Requires utilities package [MUtilities](https://github.com/mutandon/MUtilities)
+
 ## Usage
 
 The basic units of _Execution Utilities_ are commands. To create a command that can be parsed through command line or using the command console (see below) just create a class that __extends Command__. Command defines two methods, namely execute and commandDescription. The first contains the command corpus itself, the second just a description to be visualized. 
