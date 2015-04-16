@@ -89,7 +89,7 @@ public class Batch extends Command {
     
     @Override
     protected String commandDescription() {
-        return "Load and execute a batch of commans from file";
+        return "Load and execute a batch of commands from file";
     }
 
     @PositionalInput(

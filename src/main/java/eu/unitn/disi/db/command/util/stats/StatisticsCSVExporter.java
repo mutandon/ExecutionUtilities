@@ -19,7 +19,7 @@ package eu.unitn.disi.db.command.util.stats;
 
 import eu.unitn.disi.db.command.util.FileWriteOperation;
 import eu.unitn.disi.db.command.util.FileWriteOperation.Mode;
-import eu.unitn.disi.db.command.util.StringUtils;
+import eu.unitn.disi.db.mutilities.StringUtils;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

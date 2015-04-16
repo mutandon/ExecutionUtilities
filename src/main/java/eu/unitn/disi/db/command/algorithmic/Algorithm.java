@@ -19,7 +19,7 @@
 package eu.unitn.disi.db.command.algorithmic;
 
 import eu.unitn.disi.db.command.exceptions.AlgorithmExecutionException;
-import eu.unitn.disi.db.command.util.LoggableObject;
+import eu.unitn.disi.db.mutilities.LoggableObject;
 import java.sql.Time;
 
 /**

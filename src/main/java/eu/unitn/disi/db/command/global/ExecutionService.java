@@ -23,8 +23,8 @@ import eu.unitn.disi.db.command.PositionalInput;
 import eu.unitn.disi.db.command.exceptions.ArgumentDeclarationException;
 import eu.unitn.disi.db.command.exceptions.ExecutionException;
 import eu.unitn.disi.db.command.exceptions.WrongParameterException;
-import eu.unitn.disi.db.command.util.LoggableObject;
-import eu.unitn.disi.db.command.util.Pair;
+import eu.unitn.disi.db.mutilities.LoggableObject;
+import eu.unitn.disi.db.mutilities.Pair;
 import eu.unitn.disi.db.command.util.Tokenizer;
 import java.io.InputStream;
 import java.io.PrintStream;
@@ -61,6 +61,7 @@ final class ExecutionService extends LoggableObject {
     private InputStream in = System.in; 
     private static final String EMPTY_COMMAND = "                     ";
     private static final String NOT_EXISTING_ERROR = "Hey, command '%s' doesn't exist, try again ;-)";
+    private static final String HELP_INTRO = "The following commands are available";
     public static final String BATCH_COMMENT = "#";    
     private static final int PAR_SIZE = 256;
 
@@ -199,6 +200,7 @@ final class ExecutionService extends LoggableObject {
                         out.println("  " + (cmd1.length() < EMPTY_COMMAND.length() ? cmd1.concat(EMPTY_COMMAND.substring(0, EMPTY_COMMAND.length() - cmd1.length())) : cmd1 + "  ") + commands.get(cmd1).newInstance().commandDescription());
                     }
                 } else {
+                    cmd = cmd.toLowerCase();
                     out.println("HELP for command " + cmd);
                     Command c = (Command) commands.get(cmd).newInstance();
                     out.println(c.help());
@@ -216,7 +218,11 @@ final class ExecutionService extends LoggableObject {
     }
 
     public void printHelp(String cmd) {
-        printHelp(cmd, "The following commands are available\n", false);
+        printHelp(cmd, false);
+    }
+    
+    public void printHelp(String cmd, boolean console) {
+        printHelp(cmd, HELP_INTRO + "\n", console);
     }
 
     public void checkCommandCorrectness(Class<? extends Command> command)
@@ -249,6 +255,11 @@ final class ExecutionService extends LoggableObject {
         if (!checkPositions(positions)) {
             throw new ArgumentDeclarationException("Positional parameters in command %s should provide consecutive positions and numbered from 1", command.getName());
         }
+    }
+    
+    public boolean isConsoleCommand(String cmd) throws NullPointerException
+    {
+        return consoleCommands.containsKey(cmd.toLowerCase());
     }
 
     private static boolean checkPositions(Collection<Integer> positions) {
