@@ -1,18 +1,20 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-  <groupId>eu.unitn.disi.db</groupId>
-  <artifactId>ExecUtils</artifactId>
-  <version>0.2</version>
-  <packaging>jar</packaging>
+    <groupId>eu.unitn.disi.db</groupId>
+    <artifactId>ExecUtils</artifactId>
+    <version>0.2</version>
+    <packaging>jar</packaging>
 
-  <name>ExecUtils</name>
-  <url>http://maven.apache.org</url>
+    <name>ExecUtils</name>
+    <url>http://maven.apache.org</url>
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
     <build>
         <plugins>
             <plugin>
@@ -20,8 +22,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.3.2</version>
                 <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -51,35 +53,34 @@
             </plugin>
         </plugins>
     </build>
-
-  <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
- 	<groupId>org.xeustechnologies</groupId>
-	<artifactId>jcl-core</artifactId>
-	<version>2.3</version>
-    </dependency>
-    <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-      <version>1.2.17</version>
-    </dependency>
-    <dependency>
-      <groupId>org.reflections</groupId>
-      <artifactId>reflections</artifactId>
-      <version>0.9.9</version>
-    </dependency>
-  </dependencies>
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>3.8.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.xeustechnologies</groupId>
+            <artifactId>jcl-core</artifactId>
+            <version>2.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.reflections</groupId>
+            <artifactId>reflections</artifactId>
+            <version>0.9.9</version>
+        </dependency>
+        <dependency>
+            <groupId>eu.unitn.disi.db.mutilities</groupId>
+            <artifactId>MUtilities</artifactId>
+            <version>1.0</version>
+        </dependency>
+    </dependencies>
     <licenses>
-      <license>
-          <name>GNU GENERAL PUBLIC LICENSE - Version 2</name>
-          <url>http://www.gnu.org/licenses/gpl-2.0.html</url>
-          <distribution>repo</distribution>
-      </license>
-  </licenses>
+        <license>
+            <name>GNU GENERAL PUBLIC LICENSE - Version 2</name>
+            <url>http://www.gnu.org/licenses/gpl-2.0.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
 </project>

@@ -18,7 +18,7 @@
 package eu.unitn.disi.db.command.global;
 
 import eu.unitn.disi.db.command.global.ExecutionService.CommandError;
-import eu.unitn.disi.db.command.util.Pair;
+import eu.unitn.disi.db.mutilities.Pair;
 import eu.unitn.disi.db.command.util.Tokenizer;
 import java.io.BufferedReader;
 import java.io.IOException;

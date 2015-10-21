@@ -90,7 +90,11 @@ public class Jar extends Command {
             Class c;
             for (String cls : className) {
                 c = commands.get(cls);
+                if (global.isConsoleCommand(c.getSimpleName())) {
+                    throw new ExecutionException("Cannot load the jar. Command %s is a duplicate of a console command, please change the name", c.getSimpleName());
+                } 
                 global.addExecutableCommand(c.getSimpleName(), commands.get(cls));
+                
             }
             out.printf("Successfully loaded jar %s\n", jarPath);
         } catch (IOException ex) {

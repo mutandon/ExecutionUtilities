@@ -20,8 +20,7 @@ package eu.unitn.disi.db.command.global;
 
 import eu.unitn.disi.db.command.CommandInput;
 import eu.unitn.disi.db.command.exceptions.ExecutionException;
-import eu.unitn.disi.db.command.util.Pair;
-import eu.unitn.disi.db.command.util.Tokenizer;
+import eu.unitn.disi.db.mutilities.Pair;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;

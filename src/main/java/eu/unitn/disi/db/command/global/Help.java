@@ -18,7 +18,7 @@
 
 package eu.unitn.disi.db.command.global;
 
-import eu.unitn.disi.db.command.CommandInput;
+import eu.unitn.disi.db.command.PositionalInput;
 import eu.unitn.disi.db.command.exceptions.ExecutionException;
 
 /**
@@ -32,7 +32,11 @@ public class Help extends Command {
     @Override
     protected void execute() throws ExecutionException {
         ExecutionService global = ExecutionService.getInstance();
-        global.printHelp(command);
+        if (global.isConsoleCommand(command)) {
+            global.printHelp(command, true);
+        } else {
+            global.printHelp(command, false);
+        }
     }
 
     @Override
@@ -40,10 +44,10 @@ public class Help extends Command {
         return "Print a help text for user defined commands";
     }
 
-    @CommandInput(
-        consoleFormat = "-c",
-        defaultValue = "", 
-        mandatory = false
+    @PositionalInput(
+            description = "The name of the command to print the help", 
+            name = "cmd", 
+            position = 1
     )
     public void setCommand(String command) {
         this.command = command;

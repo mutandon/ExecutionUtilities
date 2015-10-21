@@ -8,11 +8,15 @@ The library contains also a console that can be used to dinamically load big obj
 
 ## Changes from version 1.0
 1. Console commands are now extensible (with annotation @ConsoleCommand)
-2. Batch experiements can be executed
+2. Batch experiments can be executed (also with javascript)
 3. History on command console
 4. Added positional parameters
-5. Better error managemente
+5. Better error management
 6. Array parameters are now allowed (with inputs comma separated, no space allowed)
+7. Help for console commands
+
+## Required Packages
+* Requires utilities package [MUtilities](https://github.com/mutandon/MUtilities)
 
 ## Usage
 
