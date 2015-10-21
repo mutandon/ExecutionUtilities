@@ -295,11 +295,20 @@ public class Statistics implements Iterable<List<String>>{
         ArrayList<String> row = new ArrayList<>(this.stringColumns.size() + this.numericColumns.size());
 
         for(String field : this.stringColumns){
+            try {
             row.add(this.stringValues.get(field).get(i));
+            } catch (IndexOutOfBoundsException ie) {
+                throw  new IndexOutOfBoundsException( "Impossible to get row " + i + " field " + field +" is incomplete" );
+            }
         }
 
         for(String field : this.numericColumns){
-            row.add(this.numericValues.get(field).get(i).toPlainString());
+            try {
+                row.add(this.numericValues.get(field).get(i).toPlainString());
+            } catch (IndexOutOfBoundsException ie) {
+                throw  new IndexOutOfBoundsException( "Impossible to get row " + i + " field " + field +" is incomplete" );
+            }
+
         }
 
         return row;
