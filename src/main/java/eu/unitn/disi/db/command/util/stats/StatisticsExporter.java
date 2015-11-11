@@ -17,8 +17,6 @@
  */
 package eu.unitn.disi.db.command.util.stats;
 
-import java.io.IOException;
-
 /**
  *
  * @author Matteo Lissandrini <ml@disi.unitn.eu>

@@ -39,6 +39,7 @@ public class Statistics implements Iterable<List<String>>{
     private final HashMap<String, LinkedList<String>> stringValues;
 
     private final MathContext mc;
+    public static final int DECIMAL_PLACES = 4;
 
 
     public Statistics() {
@@ -75,7 +76,7 @@ public class Statistics implements Iterable<List<String>>{
         }
 
         stringColumns.add(name);
-        stringValues.put(name, new LinkedList<String>());
+        stringValues.put(name, new LinkedList<>());
 
         return true;
 
@@ -93,7 +94,7 @@ public class Statistics implements Iterable<List<String>>{
         }
 
         numericColumns.add(name);
-        numericValues.put(name, new LinkedList<BigDecimal>());
+        numericValues.put(name, new LinkedList<>());
 
         return true;
 
@@ -184,6 +185,70 @@ public class Statistics implements Iterable<List<String>>{
 
         return numericValues.get(column).size();
     }
+
+
+    /**
+     *
+     * @param i
+     * @return the maximum of the values in the i-th column
+     */
+    public Double getMax(int i){
+        return this.getMax(this.getNumericFiedName(i));
+    }
+
+    /**
+     *
+     * @param column
+     * @return the maximum of the values in that column
+     */
+    public Double getMax(String column){
+        if(!numericValues.containsKey(column)){
+            throw new IllegalArgumentException("Columns " + column + " does not exists or is not of Numeric type");
+        }
+
+        LinkedList<BigDecimal> values = numericValues.get(column);
+
+        BigDecimal max = new BigDecimal( Double.MIN_VALUE, mc);
+
+        for (BigDecimal value : values) {
+            max = max.max(value);
+        }
+
+        return max.doubleValue();
+    }
+
+
+    /**
+     *
+     * @param i
+     * @return the minimum of the values in the i-th column
+     */
+    public Double getMin(int i){
+        return this.getMax(this.getNumericFiedName(i));
+    }
+
+    /**
+     *
+     * @param column
+     * @return the minimum of the values in that column
+     */
+    public Double getMin(String column){
+        if(!numericValues.containsKey(column)){
+            throw new IllegalArgumentException("Columns " + column + " does not exists or is not of Numeric type");
+        }
+
+        LinkedList<BigDecimal> values = numericValues.get(column);
+
+        BigDecimal min = new BigDecimal( Double.MIN_VALUE, mc);
+
+        for (BigDecimal value : values) {
+            min = min.min(value);
+        }
+
+        return min.doubleValue();
+    }
+
+
 
 
     /**
@@ -304,7 +369,14 @@ public class Statistics implements Iterable<List<String>>{
 
         for(String field : this.numericColumns){
             try {
-                row.add(this.numericValues.get(field).get(i).toPlainString());
+                BigDecimal bd = this.numericValues.get(field).get(i);
+
+                
+                if(!isIntegerValue(bd)){
+                    bd = bd.setScale(DECIMAL_PLACES, RoundingMode.HALF_EVEN);
+                }
+
+                row.add(bd.toPlainString());
             } catch (IndexOutOfBoundsException ie) {
                 throw  new IndexOutOfBoundsException( "Impossible to get row " + i + " field " + field +" is incomplete" );
             }
@@ -313,6 +385,15 @@ public class Statistics implements Iterable<List<String>>{
 
         return row;
 
+    }
+
+    /**
+     * Checks if Big Decimal is integer
+     * @param bd
+     * @return
+     */
+    private static boolean isIntegerValue(BigDecimal bd) {
+        return bd.signum() == 0 || bd.scale() <= 0 || bd.stripTrailingZeros().scale() <= 0;
     }
 
     @Override
