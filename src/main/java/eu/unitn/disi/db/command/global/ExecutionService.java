@@ -75,6 +75,7 @@ final class ExecutionService extends LoggableObject {
         loadedCommands = new HashMap<>();
         dynamicObjects = new HashMap<>();
         consoleCommands = new HashMap<>();
+        commandLoader = new JarClassLoader(); 
         history = new ArrayList<>();
         
         Reflections reflections = new Reflections("", new SubTypesScanner(false));

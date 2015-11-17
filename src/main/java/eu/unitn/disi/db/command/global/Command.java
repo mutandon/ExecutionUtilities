@@ -31,7 +31,7 @@ import static java.lang.Integer.parseInt;
 import static java.lang.Long.parseLong;
 import static java.lang.Short.parseShort;
 import static java.lang.System.currentTimeMillis;
-import static java.lang.reflect.Array.newInstance;
+import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -251,35 +251,34 @@ public abstract class Command extends LoggableObject {
         String input = inputs[0];
         try {
             if (clazz.isArray()) {
-                Object[] instance = (Object[]) newInstance(clazz.getComponentType(), 1);
                 String[] array = input.split(",");
-                Object[] objArr = new Object[array.length];
-                if (instance instanceof Integer[]) {
+                Object instance = Array.newInstance(clazz.getComponentType(), array.length);
+                if (instance instanceof Integer[] || instance instanceof int[]) {
                     for (int i = 0; i < array.length; i++) {
-                        objArr[i] = parseInt(array[i]);
+                         Array.set(instance, i, Integer.parseInt(array[i]));
                     }
                 } else if (instance instanceof String[]) {
-                    objArr = array;
-                } else if (instance instanceof Float[]) {
+                    instance = array;
+                } else if (instance instanceof Float[] || instance instanceof float[]) {
                     for (int i = 0; i < array.length; i++) {
-                        objArr[i] = parseFloat(array[i]);
+                        Array.set(instance, i, Float.parseFloat(array[i]));
                     }
-                } else if (instance instanceof Double[]) {
+                } else if (instance instanceof Double[] || instance instanceof double[]) {
                     for (int i = 0; i < array.length; i++) {
-                        objArr[i] = parseDouble(array[i]);
+                        Array.set(instance, i, Double.parseDouble(array[i]));
                     }
-                } else if (instance instanceof Long[]) {
+                } else if (instance instanceof Long[] || instance instanceof long[]) {
                     for (int i = 0; i < array.length; i++) {
-                        objArr[i] = parseLong(array[i]);
+                        Array.set(instance, i, Long.parseLong(array[i]));
                     }
-                } else if (instance instanceof Short[]) {
+                } else if (instance instanceof Short[] || instance instanceof short[]) {
                     for (int i = 0; i < array.length; i++) {
-                        objArr[i] = parseShort(array[i]);
+                        Array.set(instance, i, Short.parseShort(array[i]));
                     }
                 } else {
                     throw new WrongParameterException("The input %s is not recognized as a valid class for %s", Arrays.toString(inputs), clazz.toString());
                 }
-                obj = objArr;
+                obj = instance;
             } else {
                 Object instance = null;
                 if (!clazz.isPrimitive()) {
