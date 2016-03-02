@@ -3,3 +3,7 @@ dependency-pom.xml
 dependency-reduced-pom.xml
 
 *.log
+
+/.settings/*
+.classpath
+.project
