@@ -21,12 +21,14 @@ import static java.lang.String.format;
 import java.util.Formatter;
 
 /**
- * This class represnets exceptions that can use format string as input. This class
+ * This class represents exceptions that can use format string as input. This class
  * has not empty constructor.
  * @see Formatter
  * @author Davide Mottin <mottin@disi.unitn.eu>
  */
 public abstract class FormattedException extends Exception {
+
+    private static final long serialVersionUID = 1L;
     
     public FormattedException(Throwable cause) {
         super(cause);

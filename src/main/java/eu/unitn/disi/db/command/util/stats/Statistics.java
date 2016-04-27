@@ -39,7 +39,7 @@ public class Statistics implements Iterable<List<String>>{
     private final HashMap<String, LinkedList<String>> stringValues;
 
     private final MathContext mc;
-    public static final int DECIMAL_PLACES = 4;
+    public static final int DECIMAL_PLACES = 10;
 
 
     public Statistics() {
@@ -239,13 +239,13 @@ public class Statistics implements Iterable<List<String>>{
 
         LinkedList<BigDecimal> values = numericValues.get(column);
 
-        BigDecimal min = new BigDecimal( Double.MIN_VALUE, mc);
+        BigDecimal min= null;
 
         for (BigDecimal value : values) {
-            min = min.min(value);
+            min = min == null ? value : min.min(value);
         }
 
-        return min.doubleValue();
+        return min == null ? null : min.doubleValue();
     }
 
 
@@ -371,7 +371,7 @@ public class Statistics implements Iterable<List<String>>{
             try {
                 BigDecimal bd = this.numericValues.get(field).get(i);
 
-                
+
                 if(!isIntegerValue(bd)){
                     bd = bd.setScale(DECIMAL_PLACES, RoundingMode.HALF_EVEN);
                 }

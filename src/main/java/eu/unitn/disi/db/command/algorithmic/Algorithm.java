@@ -15,31 +15,69 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 package eu.unitn.disi.db.command.algorithmic;
 
 import eu.unitn.disi.db.command.exceptions.AlgorithmExecutionException;
 import eu.unitn.disi.db.mutilities.LoggableObject;
-import java.sql.Time;
+import eu.unitn.disi.db.mutilities.StopWatch;
 
 /**
- * This class represents an algorithm which should provide input and output 
- * parameters. The fact that two algorithms can be performed in series depends on the 
- * kind of input. 
- * 
+ * This class represents an algorithm which should provide input and output
+ * parameters. The fact that two algorithms can be performed in series depends
+ * on the kind of input.
+ *
  * @author Davide Mottin <mottin@disi.unitn.eu>
  */
 public abstract class Algorithm extends LoggableObject {
-    protected long time; 
-    
-    public abstract void compute() throws AlgorithmExecutionException;
-    
+
+    private final StopWatch timer = new StopWatch();
+
     /**
-     * Return the CPU time in milliseconds to run the algorithm
-     * @return The time
-     * @see Time
+     * This methods should be called, and time s automatically measured.
+     *
+     * @throws AlgorithmExecutionException
      */
-    public long getCPUTime() {
-        return time;
+    public void compute() throws AlgorithmExecutionException {
+        try {
+            timer.start();
+            this.algorithm();
+            timer.stop();
+        } catch (Exception e) {
+            timer.stop();
+            error("Algorithms %s interrupted after %s ms", e, this.getClass(), timer.getElapsedTimeMillis());
+            throw e;
+        }
+
     }
+
+    /**
+     * This method should be implemented and will be called by
+     * Algorithm.compute();
+     *
+     * @throws AlgorithmExecutionException
+     */
+    protected abstract void algorithm() throws AlgorithmExecutionException;
+
+    /**
+     * Return the Elapsed time in milliseconds to run the algorithm
+     *
+     * @return The time elapsed
+     * @see StopWatch
+     */
+    public long getComputationTime() {
+        return timer.getElapsedTimeMillis();
+    }
+
+    public boolean checkInputs() throws IllegalArgumentException, IllegalAccessException, AlgorithmExecutionException {
+        //        for (Field field : this.getClass().getDeclaredFields()) {
+        //            if (field.isAnnotationPresent(AlgorithmInput.class)) {
+        //                //TODO do check
+        //                if(field.get(this) ==  null){
+        //                    throw new AlgorithmExecutionException("The field %s for Algorithm %s cannot be NULL", field.getName(), this.getClass());
+        //                }
+        //            }
+        //        }
+        return true;
+    }
+
 }

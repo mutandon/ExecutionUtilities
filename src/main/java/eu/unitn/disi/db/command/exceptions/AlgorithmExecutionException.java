@@ -24,6 +24,8 @@ package eu.unitn.disi.db.command.exceptions;
  */
 public class AlgorithmExecutionException extends ExecutionException {
 
+    private static final long serialVersionUID = 1L;
+
     public AlgorithmExecutionException(Throwable cause) {
         super(cause);
     }

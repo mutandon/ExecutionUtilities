@@ -23,6 +23,8 @@ package eu.unitn.disi.db.command.exceptions;
  */
 public class ExecutionException extends GenericException {
 
+    private static final long serialVersionUID = 1L;
+
     public ExecutionException(String message, Object... parameters) {
         super(message, parameters);
     }
