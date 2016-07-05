@@ -26,12 +26,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
  * @author Matteo Lissandrini <ml@disi.unitn.eu>
  */
-public class Statistics implements Iterable<List<String>>{
+public class Statistics implements Iterable<List<String>> {
 
     private final ArrayList<String> numericColumns;
     private final ArrayList<String> stringColumns;
@@ -40,7 +41,6 @@ public class Statistics implements Iterable<List<String>>{
 
     private final MathContext mc;
     public static final int DECIMAL_PLACES = 10;
-
 
     public Statistics() {
         this.numericColumns = new ArrayList<>();
@@ -61,17 +61,13 @@ public class Statistics implements Iterable<List<String>>{
         this.mc = new MathContext(scale, rounding);
     }
 
-
-
-
-
     /**
      *
      * @param name
      * @return true if the filed was added, false if the field exists already
      */
-    public boolean addStringField(String name){
-        if(stringValues.containsKey(name)){
+    public boolean addStringField(String name) {
+        if (stringValues.containsKey(name)) {
             return false;
         }
 
@@ -82,14 +78,13 @@ public class Statistics implements Iterable<List<String>>{
 
     }
 
-
     /**
      *
      * @param name
      * @return true if the filed was added, false if the field exists already
      */
-    public boolean addNumericField(String name){
-        if(numericValues.containsKey(name)){
+    public boolean addNumericField(String name) {
+        if (numericValues.containsKey(name)) {
             return false;
         }
 
@@ -100,16 +95,14 @@ public class Statistics implements Iterable<List<String>>{
 
     }
 
-
-
     /**
      *
      * @param column
      * @param value
      * @return the number of values in the column, after adding the passed value
      */
-    public int addStringValue(String column, String value){
-        if(!stringValues.containsKey(column)){
+    public int addStringValue(String column, String value) {
+        if (!stringValues.containsKey(column)) {
             throw new IllegalArgumentException("Columns " + column + " does not exists or is not of String type");
         }
 
@@ -118,17 +111,14 @@ public class Statistics implements Iterable<List<String>>{
         return stringValues.get(column).size();
     }
 
-
-
-
     /**
      *
      * @param column
      * @param value
      * @return the number of values in the column, after adding the passed value
      */
-    public int addNumericValue(String column, Double value){
-        if(!numericValues.containsKey(column)){
+    public int addNumericValue(String column, Double value) {
+        if (!numericValues.containsKey(column)) {
             throw new IllegalArgumentException("Columns " + column + " does not exists or is not of Numeric type");
         }
 
@@ -143,8 +133,8 @@ public class Statistics implements Iterable<List<String>>{
      * @param value
      * @return the number of values in the column, after adding the passed value
      */
-    public int addNumericValue(String column, Integer value){
-        if(!numericValues.containsKey(column)){
+    public int addNumericValue(String column, Integer value) {
+        if (!numericValues.containsKey(column)) {
             throw new IllegalArgumentException("Columns " + column + " does not exists or is not of Numeric type");
         }
 
@@ -159,8 +149,8 @@ public class Statistics implements Iterable<List<String>>{
      * @param value
      * @return the number of values in the column, after adding the passed value
      */
-    public int addNumericValue(String column, Long value){
-        if(!numericValues.containsKey(column)){
+    public int addNumericValue(String column, Long value) {
+        if (!numericValues.containsKey(column)) {
             throw new IllegalArgumentException("Columns " + column + " does not exists or is not of Numeric type");
         }
 
@@ -169,15 +159,14 @@ public class Statistics implements Iterable<List<String>>{
         return numericValues.get(column).size();
     }
 
-
     /**
      *
      * @param column
      * @param value
      * @return the number of values in the column, after adding the passed value
      */
-    public int addNumericValue(String column, BigDecimal value){
-        if(!numericValues.containsKey(column)){
+    public int addNumericValue(String column, BigDecimal value) {
+        if (!numericValues.containsKey(column)) {
             throw new IllegalArgumentException("Columns " + column + " does not exists or is not of Numeric type");
         }
 
@@ -186,13 +175,12 @@ public class Statistics implements Iterable<List<String>>{
         return numericValues.get(column).size();
     }
 
-
     /**
      *
      * @param i
      * @return the maximum of the values in the i-th column
      */
-    public Double getMax(int i){
+    public Double getMax(int i) {
         return this.getMax(this.getNumericFiedName(i));
     }
 
@@ -201,14 +189,14 @@ public class Statistics implements Iterable<List<String>>{
      * @param column
      * @return the maximum of the values in that column
      */
-    public Double getMax(String column){
-        if(!numericValues.containsKey(column)){
+    public Double getMax(String column) {
+        if (!numericValues.containsKey(column)) {
             throw new IllegalArgumentException("Columns " + column + " does not exists or is not of Numeric type");
         }
 
         LinkedList<BigDecimal> values = numericValues.get(column);
 
-        BigDecimal max = new BigDecimal( Double.MIN_VALUE, mc);
+        BigDecimal max = new BigDecimal(Double.MIN_VALUE, mc);
 
         for (BigDecimal value : values) {
             max = max.max(value);
@@ -217,13 +205,12 @@ public class Statistics implements Iterable<List<String>>{
         return max.doubleValue();
     }
 
-
     /**
      *
      * @param i
      * @return the minimum of the values in the i-th column
      */
-    public Double getMin(int i){
+    public Double getMin(int i) {
         return this.getMax(this.getNumericFiedName(i));
     }
 
@@ -232,14 +219,14 @@ public class Statistics implements Iterable<List<String>>{
      * @param column
      * @return the minimum of the values in that column
      */
-    public Double getMin(String column){
-        if(!numericValues.containsKey(column)){
+    public Double getMin(String column) {
+        if (!numericValues.containsKey(column)) {
             throw new IllegalArgumentException("Columns " + column + " does not exists or is not of Numeric type");
         }
 
         LinkedList<BigDecimal> values = numericValues.get(column);
 
-        BigDecimal min= null;
+        BigDecimal min = null;
 
         for (BigDecimal value : values) {
             min = min == null ? value : min.min(value);
@@ -248,15 +235,12 @@ public class Statistics implements Iterable<List<String>>{
         return min == null ? null : min.doubleValue();
     }
 
-
-
-
     /**
      *
      * @param i
      * @return the average of the values in the i-th column
      */
-    public Double getAverage(int i){
+    public Double getAverage(int i) {
         return this.getAverage(this.getNumericFiedName(i));
     }
 
@@ -265,8 +249,8 @@ public class Statistics implements Iterable<List<String>>{
      * @param column
      * @return the average of the values in that column
      */
-    public Double getAverage(String column){
-        if(!numericValues.containsKey(column)){
+    public Double getAverage(String column) {
+        if (!numericValues.containsKey(column)) {
             throw new IllegalArgumentException("Columns " + column + " does not exists or is not of Numeric type");
         }
 
@@ -282,14 +266,12 @@ public class Statistics implements Iterable<List<String>>{
         return sum.divide(new BigDecimal(size), mc).doubleValue();
     }
 
-
-
     /**
      *
      * @param i
      * @return the median of the valued in the i-th column
      */
-    public Double getMedian(int i){
+    public Double getMedian(int i) {
         return this.getMedian(this.getNumericFiedName(i));
     }
 
@@ -298,8 +280,8 @@ public class Statistics implements Iterable<List<String>>{
      * @param column
      * @return the median of the values in that column
      */
-    public Double getMedian(String column){
-        if(!numericValues.containsKey(column)){
+    public Double getMedian(String column) {
+        if (!numericValues.containsKey(column)) {
             throw new IllegalArgumentException("Columns " + column + " does not exists or is not of Numeric type");
         }
 
@@ -308,24 +290,23 @@ public class Statistics implements Iterable<List<String>>{
         Double median;
         Collections.sort(values);
 
-        if (size % 2 == 0){
-            median = values.get(size/2).add( values.get(size/2 - 1)).divide(new BigDecimal("2"), mc).doubleValue();
+        if (size % 2 == 0) {
+            median = values.get(size / 2).add(values.get(size / 2 - 1)).divide(new BigDecimal("2"), mc).doubleValue();
+        } else {
+            median = values.get(size / 2).doubleValue();
         }
-        else {
-            median = values.get(size/2).doubleValue();
-        }
-
 
         return median;
     }
 
     /**
-     * Get all the names of all the columns, textual fields first, then numeric fields
+     * Get all the names of all the columns, textual fields first, then numeric
+     * fields
      *
      * @return the list of field names
      */
-    public ArrayList<String> getFields(){
-        ArrayList<String> fields = new ArrayList<>(this.stringColumns.size() + this.numericColumns.size() );
+    public ArrayList<String> getFields() {
+        ArrayList<String> fields = new ArrayList<>(this.stringColumns.size() + this.numericColumns.size());
         fields.addAll(this.stringColumns);
         fields.addAll(this.numericColumns);
         return fields;
@@ -333,52 +314,53 @@ public class Statistics implements Iterable<List<String>>{
 
     /**
      * Get the name of the i-th field among the textual columns
+     *
      * @param i
      * @return the name of the field
      */
-    public String getStringFieldName(int i){
+    public String getStringFieldName(int i) {
         return this.stringColumns.get(i);
     }
 
     /**
      * Get the name of the i-th field among the numeric columns
+     *
      * @param i
      * @return the name of the field
      */
-    public String getNumericFiedName(int i){
+    public String getNumericFiedName(int i) {
         return this.numericColumns.get(i);
     }
 
     /**
      * Get the row at i-th position in the the table of statistics
+     *
      * @param i
      * @return the Row as List of Strings, each String is the value in une cell
      */
-    public ArrayList<String> getRow(int i){
-
+    public ArrayList<String> getRow(int i) {
 
         ArrayList<String> row = new ArrayList<>(this.stringColumns.size() + this.numericColumns.size());
 
-        for(String field : this.stringColumns){
+        for (String field : this.stringColumns) {
             try {
-            row.add(this.stringValues.get(field).get(i));
+                row.add(this.stringValues.get(field).get(i));
             } catch (IndexOutOfBoundsException ie) {
-                throw  new IndexOutOfBoundsException( "Impossible to get row " + i + " field " + field +" is incomplete" );
+                throw new IndexOutOfBoundsException("Impossible to get row " + i + " field " + field + " is incomplete");
             }
         }
 
-        for(String field : this.numericColumns){
+        for (String field : this.numericColumns) {
             try {
                 BigDecimal bd = this.numericValues.get(field).get(i);
 
-
-                if(!isIntegerValue(bd)){
+                if (!isIntegerValue(bd)) {
                     bd = bd.setScale(DECIMAL_PLACES, RoundingMode.HALF_EVEN);
                 }
 
                 row.add(bd.toPlainString());
             } catch (IndexOutOfBoundsException ie) {
-                throw  new IndexOutOfBoundsException( "Impossible to get row " + i + " field " + field +" is incomplete" );
+                throw new IndexOutOfBoundsException("Impossible to get row " + i + " field " + field + " is incomplete");
             }
 
         }
@@ -388,7 +370,38 @@ public class Statistics implements Iterable<List<String>>{
     }
 
     /**
+     *
+     * @return true if all columns have the exact same lenght
+     */
+    public boolean isComplete() {
+        int l = -1;
+        for (Map.Entry<String, LinkedList<BigDecimal>> entry : numericValues.entrySet()) {
+            String key = entry.getKey();
+            LinkedList<BigDecimal> value = entry.getValue();
+            if (l < 0) {
+                l = value.size();
+            } else if (l != value.size()) {
+                return false;
+            }
+        }
+
+        for (Map.Entry<String, LinkedList<String>> entry : stringValues.entrySet()) {
+            String key = entry.getKey();
+            LinkedList<String> value = entry.getValue();
+            if (l < 0) {
+                l = value.size();
+            } else if (l != value.size()) {
+                return false;
+            }
+
+        }
+
+        return true;
+    }
+
+    /**
      * Checks if Big Decimal is integer
+     *
      * @param bd
      * @return
      */
@@ -401,17 +414,16 @@ public class Statistics implements Iterable<List<String>>{
         return new RowIterator();
     }
 
-
     private class RowIterator implements Iterator<List<String>> {
 
         private int rowIdx = 0;
 
         @Override
         public boolean hasNext() {
-            if(!stringColumns.isEmpty()) {
+            if (!stringColumns.isEmpty()) {
                 return rowIdx < stringValues.get(stringColumns.get(0)).size();
             }
-            if(!numericColumns.isEmpty()) {
+            if (!numericColumns.isEmpty()) {
                 return rowIdx < numericValues.get(numericColumns.get(0)).size();
             }
             return false;

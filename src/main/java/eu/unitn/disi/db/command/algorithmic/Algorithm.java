@@ -39,6 +39,7 @@ public abstract class Algorithm extends LoggableObject {
      */
     public void compute() throws AlgorithmExecutionException {
         try {
+            timer.reset();
             timer.start();
             this.algorithm();
             timer.stop();

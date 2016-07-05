@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,17 +38,20 @@ import java.util.List;
 public class StatisticsCSVExporter extends StatisticsExporter implements FileWriteOperation {
 
     private final Mode mode;
+    private final Path fileLocation;
 
-    public StatisticsCSVExporter(Statistics s) {
-        super(s);
-        this.mode = Mode.APPEND;
+    public StatisticsCSVExporter(Statistics s, String fileLoc) {        
+        this(s, fileLoc,  Mode.APPEND);
     }
-
-    public StatisticsCSVExporter(Statistics s, Mode mode) {
+    
+    public StatisticsCSVExporter(Statistics s, String fileLoc, Mode mode) {
         super(s);
         this.mode = mode;
+        this.fileLocation = Paths.get(fileLoc);
     }
 
+    
+    
     // TODO Export with or withou header
     @Override
     public String export() {
@@ -75,9 +79,14 @@ public class StatisticsCSVExporter extends StatisticsExporter implements FileWri
     }
 
 
+    
+    public void write() throws IOException {
+        write(this.fileLocation, this.mode);
+    }
+    
     @Override
-    public void write(Path location) throws IOException {
-        write(location, this.mode);
+    public void write(Path p) throws IOException {
+        write(p, this.mode);
     }
 
     @Override
@@ -86,6 +95,8 @@ public class StatisticsCSVExporter extends StatisticsExporter implements FileWri
             writer.write(this.export());
         }
     }
+
+    
 
 
 
