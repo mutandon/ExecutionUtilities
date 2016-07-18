@@ -103,8 +103,10 @@ public class ConsoleHandler {
                             case "\\?": //global help
                                 global.printHelp("", "Available console commands\n", true);
                                 break;                                   
-                            default: 
+                            default:{ 
                                 retval = global.runCommand(tokenizedCommand, true);
+                                System.gc();
+                            }     
                         }
                         if (retval == null || !(retval instanceof CommandError) || CommandError.NOT_EXISTS != (CommandError)retval) {
                             if (!"hist".equals(mainCommand.toLowerCase())) {
