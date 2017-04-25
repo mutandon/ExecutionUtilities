@@ -17,6 +17,7 @@
  */
 package eu.unitn.disi.db.command.global;
 
+import static eu.unitn.disi.db.command.global.CommandRunner.QUITS;
 import eu.unitn.disi.db.command.global.ExecutionService.CommandError;
 import eu.unitn.disi.db.mutilities.Pair;
 import eu.unitn.disi.db.command.util.Tokenizer;
@@ -24,7 +25,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Scanner;
+import java.util.Set;
 import org.apache.log4j.Logger;
 import static org.apache.log4j.Logger.getLogger;
 
@@ -40,7 +44,8 @@ public class ConsoleHandler {
     private final String EXIT_MESSAGE;
     private static final String CONSOLE_LINE = "dcmd> ";
     private static final Logger logger = getLogger(ConsoleHandler.class);
-
+    
+    
     private static class Singleton {
 
         private static final ConsoleHandler INSTANCE = new ConsoleHandler();
@@ -93,7 +98,7 @@ public class ConsoleHandler {
 
         try {
             line = in.nextLine().trim();
-            while (!"exit".equals(line) && !"quit".equals(line)) {
+            while (!QUITS.contains(line)) {
                 tokenizedCommand = ExecutionService.tokenizeCommand(line);
                 if (tokenizedCommand.length > 0) {
                     mainCommand = tokenizedCommand[0];

@@ -18,12 +18,16 @@
 package eu.unitn.disi.db.command.global;
 
 import static eu.unitn.disi.db.command.global.ExecutionService.getInstance;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * This is the main engine, it executes commands.
  * @author Davide Mottin <mottin@disi.unitn.eu>
  */
 public final class CommandRunner {
+    public static final Set<String> QUITS = new HashSet<>(Arrays.asList("quit", "exit"));
     private static final String NO_COMMAND_ERROR = "No command specified. The right syntax is:\n" +
                                "[jar_name] command [parameters]\n" +
                                "where 'command' is a fully qualified command name\n" +

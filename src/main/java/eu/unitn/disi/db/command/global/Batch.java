@@ -21,6 +21,7 @@ package eu.unitn.disi.db.command.global;
 import eu.unitn.disi.db.command.CommandInput;
 import eu.unitn.disi.db.command.PositionalInput;
 import eu.unitn.disi.db.command.exceptions.ExecutionException;
+import static eu.unitn.disi.db.command.global.CommandRunner.QUITS;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -68,6 +69,9 @@ public class Batch extends Command {
             for (String line : lines) {
                 if (line != null) {
                     line = line.trim();
+                    if(!QUITS.contains(line)){
+                        break;
+                    }
                     if (!"".equals(line) && !line.startsWith(ExecutionService.BATCH_COMMENT)) {
                         tokenizedCommand = ExecutionService.tokenizeCommand(line);
                         retval = global.runCommand(tokenizedCommand, true);

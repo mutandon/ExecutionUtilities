@@ -30,7 +30,7 @@ import eu.unitn.disi.db.mutilities.StopWatch;
  */
 public abstract class Algorithm extends LoggableObject {
 
-    private final StopWatch timer = new StopWatch();
+    protected final StopWatch timer = new StopWatch();
 
     /**
      * This methods should be called, and time s automatically measured.

@@ -23,6 +23,8 @@ package eu.unitn.disi.db.command.exceptions;
  */
 public class WrongParameterException extends GenericException {
 
+    private static final long serialVersionUID = 1L;
+
     public WrongParameterException(Throwable cause) {
         super(cause);
     }

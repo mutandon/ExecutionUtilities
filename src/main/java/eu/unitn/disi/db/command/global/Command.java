@@ -153,17 +153,17 @@ public abstract class Command extends LoggableObject {
                 description += inputDescription.description();
                 description += !"".equals(inputDescription.defaultValue())? " (default " + inputDescription.defaultValue() + ")" : "";
                 descriptions.put(inputDescription.consoleFormat(), description);
-                namedParameters.put(inputDescription.consoleFormat(), new Pair(method, inputDescription));
+                namedParameters.put(inputDescription.consoleFormat(), new Pair<>(method, inputDescription));
             }
             if (dynamicDescription != null) {
                 description = dynamicDescription.description();
                 dynamicDescriptions.put(dynamicDescription.consoleFormat(), description);
-                dynamicParameters.put(dynamicDescription.consoleFormat(), new Pair(method, dynamicDescription));
+                dynamicParameters.put(dynamicDescription.consoleFormat(), new Pair<>(method, dynamicDescription));
             }
             if (positionalDescription != null) {
                 description = positionalDescription.description();
                 positionalDescriptions.put(positionalDescription.name(), description);
-                positionalParameters.put(positionalDescription.position(), new Pair(method, positionalDescription));
+                positionalParameters.put(positionalDescription.position(), new Pair<>(method, positionalDescription));
             }
         }
     }
@@ -322,7 +322,7 @@ public abstract class Command extends LoggableObject {
      */
     public final void exec(String[] params) throws ExecutionException, WrongParameterException 
     {
-        exec(params, new HashMap<String, Object>());
+        exec(params, new HashMap<>());
     }
 
     

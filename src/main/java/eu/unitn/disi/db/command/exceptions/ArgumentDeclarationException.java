@@ -28,6 +28,8 @@ package eu.unitn.disi.db.command.exceptions;
  */
 public class ArgumentDeclarationException extends GenericException {
 
+    private static final long serialVersionUID = 1L;
+
     public ArgumentDeclarationException(String message, Object... parameters) {
         super(message, parameters);
     }
