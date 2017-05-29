@@ -84,7 +84,7 @@ public abstract class Command extends LoggableObject {
     
     
     public Command() {
-        loadReadableFields();
+        loadReadableFields();        
     }
         
     /**
@@ -92,6 +92,8 @@ public abstract class Command extends LoggableObject {
      * @throws ExecutionException If somethign wrong happens
      */
     protected abstract void execute() throws ExecutionException;
+    
+    
     /**
      * Personalize the description of the method in the help
      * @return A string to describe the command
