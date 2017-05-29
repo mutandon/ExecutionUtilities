@@ -31,6 +31,19 @@ import eu.unitn.disi.db.mutilities.StopWatch;
 public abstract class Algorithm extends LoggableObject {
 
     protected final StopWatch timer = new StopWatch();
+    
+    @AlgorithmInput
+    protected int memoryLimit = -1; 
+    
+    @AlgorithmInput
+    protected int timeLimit = -1; 
+    
+    @AlgorithmOutput
+    private boolean interrupted = false;
+    
+    @AlgorithmOutput
+    private boolean memoryExhausted = false; 
+
 
     /**
      * This methods should be called, and time s automatically measured.
@@ -80,5 +93,47 @@ public abstract class Algorithm extends LoggableObject {
         //        }
         return true;
     }
+    
+    public int getMemoryLimit() {
+        return memoryLimit;
+    }
+
+    public void setMemoryLimit(int memoryLimit) {
+        this.memoryLimit = memoryLimit;
+    }
+
+    public int getTimeLimit() {
+        return timeLimit;
+    }
+
+    public void setTimeLimit(int timeLimit) {
+        this.timeLimit = timeLimit;
+    }
+
+    public boolean isInterrupted() {
+        return interrupted;
+    }
+
+    protected void setInterrupted(boolean interrupted) {
+        this.interrupted = interrupted;
+    }
+
+    protected void setInterrupted() {
+        this.interrupted = true;
+    }
+    
+    public boolean isMemoryExhausted() {
+        return memoryExhausted;
+    }
+
+    protected void setMemoryExhausted(boolean memoryExhausted) {
+        this.memoryExhausted = memoryExhausted;
+    }
+
+    protected void setMemoryExhausted() {
+        this.memoryExhausted = true;
+    }
+    
+    
 
 }
