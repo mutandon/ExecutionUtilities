@@ -40,15 +40,16 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
-
 /**
  * Abstract class to represents commands that can be executed
+ *
  * @author Davide Mottin <mottin@disi.unitn.eu>
  */
 public abstract class Command extends LoggableObject {
-    
+
     /**
-     * Parameters are the accepted input of the command along with their description
+     * Parameters are the accepted input of the command along with their
+     * description
      */
     protected Map<String, String> descriptions;
     /**
@@ -58,55 +59,55 @@ public abstract class Command extends LoggableObject {
     protected Map<String, String> dynamicDescriptions;
     /**
      * A map containing the descriptions of the positional parameters
-     */    
-    protected Map<String, String> positionalDescriptions; 
+     */
+    protected Map<String, String> positionalDescriptions;
     /*
      * Named command inputs used in init phase. 
      */
-    private Map<String, Pair<Method, CommandInput>> namedParameters; 
+    private Map<String, Pair<Method, CommandInput>> namedParameters;
     /*
      * Dynamic inputs used in init phase
      */
     private Map<String, Pair<Method, DynamicInput>> dynamicParameters;
     /*
      * Positional inputs used in init phase
-     */    
-    private Map<Integer, Pair<Method, PositionalInput>> positionalParameters; 
+     */
+    private Map<Integer, Pair<Method, PositionalInput>> positionalParameters;
     /*
      * Execution time for the command.
      */
-    private long executionTime; 
+    private long executionTime;
     /*
      * Determines if this command is a launcher
-    */
+     */
     private boolean launcher;
-    
-    
-    
+
     public Command() {
-        loadReadableFields();        
+        loadReadableFields();
     }
-        
+
     /**
-     * This methods actually executes the command after having loaded all the paramenters
+     * This methods actually executes the command after having loaded all the
+     * paramenters
+     *
      * @throws ExecutionException If somethign wrong happens
      */
     protected abstract void execute() throws ExecutionException;
-    
-    
+
     /**
      * Personalize the description of the method in the help
+     *
      * @return A string to describe the command
      */
     protected abstract String commandDescription();
-    
-    
+
     /**
      * Returns an help that can be used in a user interface
+     *
      * @return The help message
      */
     public String help() {
-        StringBuilder sb = new StringBuilder(commandDescription());        
+        StringBuilder sb = new StringBuilder(commandDescription());
         sb.append("\n");
         if (!positionalDescriptions.isEmpty()) {
             sb.append("\npositional arguments:\n");
@@ -128,32 +129,31 @@ public abstract class Command extends LoggableObject {
         }
         return sb.toString();
     }
-    
-    
+
     protected final void loadReadableFields() {
         Method[] methods = this.getClass().getMethods();
         CommandInput inputDescription;
         DynamicInput dynamicDescription;
-        PositionalInput positionalDescription; 
-        
+        PositionalInput positionalDescription;
+
         namedParameters = new HashMap<>();
         dynamicParameters = new HashMap<>();
-        positionalParameters = new HashMap<>(); 
+        positionalParameters = new HashMap<>();
         descriptions = new LinkedHashMap<>();
         dynamicDescriptions = new LinkedHashMap<>();
-        positionalDescriptions = new LinkedHashMap<>(); 
+        positionalDescriptions = new LinkedHashMap<>();
         String description;
-                
+
         //Check method annotations and store into the respective variables
         for (Method method : methods) {
             inputDescription = method.getAnnotation(CommandInput.class);
             dynamicDescription = method.getAnnotation(DynamicInput.class);
             positionalDescription = method.getAnnotation(PositionalInput.class);
-            
+
             if (inputDescription != null) {
-                description = !inputDescription.mandatory()? "[optional] " : "";
+                description = !inputDescription.mandatory() ? "[optional] " : "";
                 description += inputDescription.description();
-                description += !"".equals(inputDescription.defaultValue())? " (default " + inputDescription.defaultValue() + ")" : "";
+                description += !"".equals(inputDescription.defaultValue()) ? " (default " + inputDescription.defaultValue() + ")" : "";
                 descriptions.put(inputDescription.consoleFormat(), description);
                 namedParameters.put(inputDescription.consoleFormat(), new Pair<>(method, inputDescription));
             }
@@ -169,16 +169,15 @@ public abstract class Command extends LoggableObject {
             }
         }
     }
-    
-    
-    protected void readParams(String[] params, Map<String, Object> dynamicObjects) 
+
+    protected void readParams(String[] params, Map<String, Object> dynamicObjects)
             throws WrongParameterException {
         Method method = null;
         Object value;
-        int i; 
-        
+        int i;
+
         CommandInput inputDescription;
-        
+
         try {
             //First process positional params, if present, then all the others
             for (i = 0; i < positionalDescriptions.size(); i++) {
@@ -188,7 +187,7 @@ public abstract class Command extends LoggableObject {
                     method.invoke(this, value);
                 } else {
                     throw new WrongParameterException("Positional parameters are all mandatories, some of them are missing");
-                }                
+                }
             }
             for (i = positionalDescriptions.size(); i < params.length; i++) {
                 if (namedParameters.containsKey(params[i])) {
@@ -200,7 +199,7 @@ public abstract class Command extends LoggableObject {
                     //Is a boolean 
                     if (method.getParameterTypes()[0].getName().equals("boolean") || method.getParameterTypes()[0].getName().equals("Boolean")) {
                         method.invoke(this, true);//Assign value
-                    } else { 
+                    } else {
                         value = checkInputClass(method.getParameterTypes()[0], params[i + 1]);
                         method.invoke(this, value);
                         i++;
@@ -247,7 +246,7 @@ public abstract class Command extends LoggableObject {
             throw ex;
         }
     }
-    
+
     protected Object checkInputClass(Class clazz, String... inputs) throws WrongParameterException {
         Object obj = null;
         String input = inputs[0];
@@ -257,7 +256,7 @@ public abstract class Command extends LoggableObject {
                 Object instance = Array.newInstance(clazz.getComponentType(), array.length);
                 if (instance instanceof Integer[] || instance instanceof int[]) {
                     for (int i = 0; i < array.length; i++) {
-                         Array.set(instance, i, Integer.parseInt(array[i]));
+                        Array.set(instance, i, Integer.parseInt(array[i]));
                     }
                 } else if (instance instanceof String[]) {
                     instance = array;
@@ -286,7 +285,7 @@ public abstract class Command extends LoggableObject {
                 if (!clazz.isPrimitive()) {
                     instance = clazz.newInstance();
                 }
-                
+
                 if (clazz.getName().equals("int") || instance instanceof Integer) {
                     obj = parseInt(input);
                 } else if (instance instanceof String) {
@@ -300,40 +299,37 @@ public abstract class Command extends LoggableObject {
                 } else if (clazz.getName().equals("long") || instance instanceof Long) {
                     obj = parseLong(input);
                 } else if (clazz.getName().equals("boolean") || instance instanceof Boolean) {
-                    obj = parseBoolean(input);  
+                    obj = parseBoolean(input);
                 } else if (clazz.getName().equals("char") || instance instanceof Character) {
                     obj = input.charAt(0);
                 } else {
                     throw new WrongParameterException("The input %s is not recognized as a valid class for %s", Arrays.toString(inputs), clazz.toString());
                 }
             }
-            
+
         } catch (InstantiationException | IllegalAccessException ex) {
             throw new WrongParameterException("The input %s is not recognized as a valid class for %s", Arrays.toString(inputs), clazz.toString());
         }
         return obj;
     }
-    
+
     /**
-     * Executes the command with the input parameters, it checks for the valid annotations. 
-     * It cannot be changed by the subclasses
-     * 
+     * Executes the command with the input parameters, it checks for the valid
+     * annotations. It cannot be changed by the subclasses
+     *
      * @param params The input parameters to be processed
      * @throws ExecutionException If something happens in the execution
      * @throws WrongParameterException If the input parameters are wrong
      */
-    public final void exec(String[] params) throws ExecutionException, WrongParameterException 
-    {
+    public final void exec(String[] params) throws ExecutionException, WrongParameterException {
         exec(params, new HashMap<>());
     }
 
-    
-    public final void exec(String[] params, Map<String,Object> dynamicObjects) 
-            throws ExecutionException, WrongParameterException 
-    {
+    public final void exec(String[] params, Map<String, Object> dynamicObjects)
+            throws ExecutionException, WrongParameterException {
         readParams(params, dynamicObjects);
         executionTime = -currentTimeMillis();
-        try {    
+        try {
             execute();
         } catch (ExecutionException ex) {
             throw ex;
@@ -343,9 +339,10 @@ public abstract class Command extends LoggableObject {
             info("Command %s executed in %dms", this.getClass().getSimpleName(), executionTime);
         }
     }
-    
+
     /**
      * Return last execution time (in milliseconds) for the command
+     *
      * @return last execution time in milliseconds
      */
     public long getExecutionTime() {
