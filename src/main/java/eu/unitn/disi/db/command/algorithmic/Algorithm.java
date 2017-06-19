@@ -56,9 +56,13 @@ public abstract class Algorithm extends LoggableObject {
             timer.start();
             this.algorithm();
             timer.stop();
-        } catch (Exception e) {
+        } catch (InterruptedException e){
             timer.stop();
             error("Algorithms %s interrupted after %s ms", e, this.getClass(), timer.getElapsedTimeMillis());
+            this.interrupted = true;
+        } catch (AlgorithmExecutionException e) {
+            timer.stop();
+            error("Algorithms %s encountered and error after %s ms", e, this.getClass(), timer.getElapsedTimeMillis());
             throw e;
         }
 
@@ -69,8 +73,9 @@ public abstract class Algorithm extends LoggableObject {
      * Algorithm.compute();
      *
      * @throws AlgorithmExecutionException
+     * @throws java.lang.InterruptedException
      */
-    protected abstract void algorithm() throws AlgorithmExecutionException;
+    protected abstract void algorithm() throws AlgorithmExecutionException, InterruptedException;
 
     /**
      * Return the Elapsed time in milliseconds to run the algorithm
