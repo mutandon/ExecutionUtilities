@@ -241,7 +241,7 @@ public abstract class Command extends LoggableObject {
             }
             throw new WrongParameterException("Something happened while calling method '%s'", ex, methodName);
         } catch (ArrayIndexOutOfBoundsException ex) {
-            throw new WrongParameterException("Positional parameters are all mandatory.");
+            throw new WrongParameterException("Positional parameters are all mandatory.", ex);
         } catch (WrongParameterException ex) {
             throw ex;
         }
