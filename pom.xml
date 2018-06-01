@@ -4,7 +4,7 @@
 
     <groupId>eu.unitn.disi.db</groupId>
     <artifactId>ExecUtils</artifactId>
-    <version>0.2</version>
+    <version>1.0</version>
     <packaging>jar</packaging>
 
     <name>ExecUtils</name>
@@ -75,7 +75,7 @@
         <dependency>
             <groupId>eu.unitn.disi.db.mutilities</groupId>
             <artifactId>MUtilities</artifactId>
-            <version>1.0</version>
+            <version>2.0</version>
         </dependency>
     </dependencies>
     <licenses>
