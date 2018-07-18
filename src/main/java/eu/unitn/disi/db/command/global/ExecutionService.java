@@ -171,7 +171,7 @@ final class ExecutionService extends LoggableObject {
                 obj = ((LoaderCommand) c).getObject();
             }
         } catch (WrongParameterException ex) {
-            error("Wrong parameter: %s", ex.getMessage());
+            error("Wrong parameter: %s", ex, ex.getMessage());
             obj = CommandError.ERROR;
         } catch (ExecutionException ex) {
             fatal("Command %s has thrown an exception, message: %s", ex, args[0], ex.getMessage());
