@@ -239,7 +239,7 @@ public abstract class Command extends LoggableObject {
             if (method != null) {
                 methodName = method.getName();
             }
-            throw new WrongParameterException("Something happened while calling method '%s'", ex, methodName);
+            throw new WrongParameterException("Something happened while calling method '%s', message is %s", ex, methodName, ex.getMessage());
         } catch (ArrayIndexOutOfBoundsException ex) {
             throw new WrongParameterException("Positional parameters are all mandatory.", ex);
         } catch (WrongParameterException ex) {
